@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">TODOApp</string>
+    <string name="your_things">Your Things</string>
+    <string name="date">No date selected</string>
+    <string name="work_done">0% done</string>
+    <string name="zero">0</string>
+    <string name="personal">Personal</string>
+    <string name="business">Business</string>
+    <string name="inbox">INBOX</string>
+    <string name="completed">COMPLETED</string>
+    <string name="todo_type">Type</string>
+    <string name="todo_title">Title</string>
+    <string name="time">time</string>
+    <string name="add_new_thing">Add new thing</string>
+    <string name="type">Type</string>
+    <string name="title">Title</string>
+    <string name="place">Place</string>
+    <string name="edit_time">Time</string>
+    <string name="notification">Notification</string>
+    <string name="add_your_thing">ADD YOUR THING</string>
+    <string-array name="todo_types">
+        <item>Business</item>
+        <item>Personal</item>
+    </string-array>
+</resources>

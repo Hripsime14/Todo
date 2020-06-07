@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/background_image_id"
+        android:layout_width="wrap_content"
+        android:layout_height="250sp"
+        android:foreground="@drawable/shadow"
+        android:alpha="0.9"
+        android:background="@drawable/evening"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/your_things_text_id"
+        android:layout_width="110sp"
+        android:layout_height="wrap_content"
+        android:text="@string/your_things"
+        android:textColor="@color/colorWhite"
+        android:textSize="35sp"
+        android:layout_margin="20dp"
+        app:layout_constraintBottom_toBottomOf="@id/background_image_id"
+        app:layout_constraintStart_toStartOf="@id/background_image_id"
+        app:layout_constraintTop_toTopOf="@id/background_image_id" />
+
+    <TextView
+        android:id="@+id/date_text_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/date"
+        android:textColor="@color/colorWhite"
+        android:textSize="12sp"
+        android:layout_margin="15dp"
+        app:layout_constraintBottom_toBottomOf="@id/background_image_id"
+        app:layout_constraintStart_toStartOf="@id/background_image_id"/>
+
+
+    <TextView
+        android:id="@+id/business_text_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:textSize="12sp"
+        android:textColor="@color/colorWhite"
+        android:text="@string/business"
+        app:layout_constraintBottom_toBottomOf="@id/your_things_text_id"
+        app:layout_constraintEnd_toEndOf="@id/background_image_id"/>
+
+    <TextView
+        android:id="@+id/business_value_text_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/zero"
+        android:textColor="@color/colorWhite"
+        android:textSize="40sp"
+        app:layout_constraintEnd_toEndOf="@id/business_text_id"
+        app:layout_constraintBottom_toTopOf="@id/business_text_id"/>
+
+    <TextView
+        android:id="@+id/personal_text_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/personal"
+        android:textColor="@color/colorWhite"
+        android:textSize="12sp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="@id/business_text_id"
+        app:layout_constraintEnd_toStartOf="@id/business_text_id"/>
+
+    <TextView
+        android:id="@+id/personal_value_text_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/zero"
+        android:textColor="@color/colorWhite"
+        android:textSize="40sp"
+        app:layout_constraintEnd_toEndOf="@id/personal_text_id"
+        app:layout_constraintBottom_toTopOf="@id/personal_text_id"/>
+
+    <TextView
+        android:id="@+id/work_done_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/work_done"
+        android:textColor="@color/colorWhite"
+        android:textSize="12sp"
+        android:layout_margin="15dp"
+        app:layout_constraintEnd_toEndOf="@id/background_image_id"
+        app:layout_constraintBottom_toBottomOf="@id/background_image_id"
+        />
+
+    <ProgressBar
+        android:id="@+id/progress_bar_id"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_margin="5dp"
+        android:theme="@style/AppTheme.WhiteAccent"
+        app:layout_constraintBottom_toBottomOf="@id/work_done_id"
+        app:layout_constraintTop_toTopOf="@id/work_done_id"
+        app:layout_constraintEnd_toStartOf="@id/work_done_id"/>
+
+
+    <TextView
+        android:id="@+id/inbox_text_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/inbox"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorGrey"
+        android:layout_margin="15dp"
+        app:layout_constraintTop_toBottomOf="@id/background_image_id"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/todo_list_id"
+        android:layout_width="match_parent"
+        android:layout_height="450dp"
+        android:background="@color/colorWhite"
+        android:layout_marginTop="15dp"
+        app:suggestionRowLayout="@layout/todo_list_single_row"
+        app:layout_constraintTop_toBottomOf="@id/inbox_text_id"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:src="@drawable/ic_add_black_24dp"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
