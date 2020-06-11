@@ -35,7 +35,7 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
     @Override
     public void onBindViewHolder(@NonNull ToDoListAdapter.MyViewHolder holder, int position) {
         final ToDoModel model = list.get(position);
-        holder.type.setText(model.getType());
+        holder.type.setText(model.getType() + "");
         holder.place.setText(model.getPlace());
         holder.time.setText(model.getTime());
     }

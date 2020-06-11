@@ -7,11 +7,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -23,28 +25,27 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView list;
     private ToDoListAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
-    private ToDoModel model;
-    private List<ToDoModel> modelList = new ArrayList<>();
     private static final int TEMP = 1;
+    private TextView personalTodoNumber;
+    private TextView businessTodoNumber;
+    private ToDoModel model;
+    private TextView workDoneProcent;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        personalTodoNumber = findViewById(R.id.personal_value_text_id);
+        businessTodoNumber = findViewById(R.id.business_value_text_id);
+        workDoneProcent = findViewById(R.id.work_done_id);
+
         list = findViewById(R.id.todo_list_id);
         layoutManager = new LinearLayoutManager(this);
         list.setLayoutManager(layoutManager);
-        model = new ToDoModel();
-        model.setType("Personal");
-        model.setTitle("Shopping");
-        model.setPlace("NYC");
-        model.setTime("9am");
-        model.setNotification("There is no notification yet");
-        modelList.add(model);
-        modelList.add(model);
-        modelList.add(model);
-        adapter = new ToDoListAdapter(modelList);
+        adapter = new ToDoListAdapter(Servis.getInstance().getList());
         list.setAdapter(adapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(list.getContext(), DividerItemDecoration.VERTICAL);
         list.addItemDecoration(dividerItemDecoration);
@@ -55,22 +56,36 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), AddToDo.class);
-                startActivity(intent);
-
+//                startActivity(intent);
+                startActivityForResult(intent, TEMP);
             }
         });
+    }
 
 
-        final AddToDo addToDo = AddToDo.getInstance();
-        if (addToDo != null)
-            addToDo.setModelListener(new AddToDo.ModelListener() {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-                @Override
-                public void onModelCreated(ToDoModel model) {
-                    Log.d("Log", "onModelCreated: " + model);
-                    modelList.set(0, model);
-                    adapter.notifyItemChanged(0, model);
+        if (requestCode == TEMP) {
+            model = Servis.getInstance().getList().get(0);
+            adapter.notifyItemChanged(0, model);
+//            if (model != null) {
+//                if (model.getType().equals("Personal")) {
+//                    String text = (Integer.parseInt(personalTodoNumber.getText().toString()) + 1)+"";
+//                    personalTodoNumber.setText(text);
+//                }
+//                else businessTodoNumber.setText(model.getType());
+//            }
+            if (model != null) {
+                if (model.getType() == ToDoTypeAccess.BUSINESS_TYPE) {
+                    String text = (Integer.parseInt(businessTodoNumber.getText().toString()) + 1)+"";
+                    businessTodoNumber.setText(text);
+                } else if (model.getType() == ToDoTypeAccess.PERSONAL_TYPE){
+                    String text = (Integer.parseInt(personalTodoNumber.getText().toString()) + 1)+"";
+                    personalTodoNumber.setText(text);
                 }
-            });
+            }
+        }
     }
 }

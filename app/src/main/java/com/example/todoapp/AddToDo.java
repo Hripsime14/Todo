@@ -1,9 +1,7 @@
 package com.example.todoapp;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,30 +13,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 public class AddToDo extends AppCompatActivity {
-    private static AddToDo instance;
-    private ModelListener listener;
     private ToDoModel model = new ToDoModel();
-
-    private  AddToDo() {
-        this.listener = null;
-        instance = this;
-    }
-
-    public static AddToDo getInstance() {
-        if (instance == null)
-        return new AddToDo();
-        else return instance;
-    }
-
-    public interface ModelListener {
-        void onModelCreated(ToDoModel model);
-    }
-
-    public void setModelListener (ModelListener listener) {
-        this.listener = listener;
-    }
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +29,7 @@ public class AddToDo extends AppCompatActivity {
 //        TODO: haskanal te es toxy inchi a petq u hamapatasxan layout@
 
 
-        Spinner spinner = findViewById(R.id.type_spinner_id);
+        final Spinner spinner = findViewById(R.id.type_spinner_id);
         spinner.setAdapter(adapter);
 
         EditText editField = findViewById(R.id.title_edit_id);
@@ -90,7 +65,7 @@ public class AddToDo extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 model.setPlace(s.toString());
                 if (model != null)
-                    Log.d("Log", "space is " + model.getPlace() + ", and title is " + model.getTitle());
+                    Log.d("Log0", "space is " + model.getPlace() + ", and title is " + model.getTitle());
             }
         });
         editField = findViewById(R.id.time_edit_id);
@@ -132,16 +107,12 @@ public class AddToDo extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (listener != null)
-                listener.onModelCreated(model);
+                model.setType(spinner.getSelectedItemPosition());//.getSelectedItem().toString());
+                Log.d("Log11", "onClick: p = " + spinner.getSelectedItemPosition());
+                Servis.getInstance().addToDo(model );
                 finish();
             }
         });
 
-
-
     }
-
-
 }

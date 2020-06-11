@@ -1,18 +1,18 @@
 package com.example.todoapp;
 
 public class ToDoModel {
-    private String type;
+    private int type;
     private String title;
     private String place;
     private String time;
     private String notification;
 
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 

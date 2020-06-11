@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">TODOApp</string>
     <string name="your_things">Your Things</string>
-    <string name="date">No date selected</string>
+    <string name="date">01/01/20</string>
     <string name="work_done">0% done</string>
     <string name="zero">0</string>
     <string name="personal">Personal</string>

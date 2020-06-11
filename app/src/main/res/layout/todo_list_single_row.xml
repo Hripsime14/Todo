@@ -3,7 +3,6 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_weight="1"
-    android:layout_marginTop="10dp"
     android:weightSum="1">
 
     <ImageView
@@ -11,6 +10,7 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:background="@drawable/evening"
+        android:layout_marginTop="10dp"
         android:layout_marginStart="30dp"
         android:layout_marginBottom="10dp"/>
 
