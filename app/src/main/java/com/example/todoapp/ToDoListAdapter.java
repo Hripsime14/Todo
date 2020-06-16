@@ -18,11 +18,6 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
         this.list = list;
     }
 
-    public void reloadList(List<ToDoModel> list) {
-        this.list = list;
-        notifyDataSetChanged();
-    }
-
     @NonNull
     @Override
     public ToDoListAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -35,7 +30,8 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
     @Override
     public void onBindViewHolder(@NonNull ToDoListAdapter.MyViewHolder holder, int position) {
         final ToDoModel model = list.get(position);
-        holder.type.setText(model.getType() + "");
+        if (model.getType() == ToDoTypeAccess.BUSINESS_TYPE) holder.type.setText(R.string.business);
+        else holder.type.setText(R.string.personal);
         holder.place.setText(model.getPlace());
         holder.time.setText(model.getTime());
     }

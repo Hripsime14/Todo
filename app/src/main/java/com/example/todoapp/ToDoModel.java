@@ -1,12 +1,16 @@
 package com.example.todoapp;
 
 public class ToDoModel {
+    private long ID;
     private int type;
     private String title;
     private String place;
     private String time;
     private String notification;
 
+    public long getID() {
+        return ID;
+    }
 
     public int getType() {
         return type;

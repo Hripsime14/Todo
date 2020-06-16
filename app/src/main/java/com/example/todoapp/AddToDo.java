@@ -14,6 +14,7 @@ import android.widget.Spinner;
 
 public class AddToDo extends AppCompatActivity {
     private ToDoModel model = new ToDoModel();
+    private Servis servis = Servis.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +110,9 @@ public class AddToDo extends AppCompatActivity {
             public void onClick(View v) {
                 model.setType(spinner.getSelectedItemPosition());//.getSelectedItem().toString());
                 Log.d("Log11", "onClick: p = " + spinner.getSelectedItemPosition());
-                Servis.getInstance().addToDo(model );
+                servis.setContext(getApplicationContext());
+                servis.addToDo(model );
+                servis.addToDoDB(model);
                 finish();
             }
         });

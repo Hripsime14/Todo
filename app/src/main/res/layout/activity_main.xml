@@ -120,7 +120,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/todo_list_id"
         android:layout_width="match_parent"
-        android:layout_height="450dp"
+        android:layout_height="350dp"
         android:background="@color/colorWhite"
         android:layout_marginTop="15dp"
         app:suggestionRowLayout="@layout/todo_list_single_row"

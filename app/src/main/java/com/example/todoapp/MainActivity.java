@@ -9,12 +9,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.todoapp.Backend.ToDoHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -29,23 +31,25 @@ public class MainActivity extends AppCompatActivity {
     private TextView personalTodoNumber;
     private TextView businessTodoNumber;
     private ToDoModel model;
-    private TextView workDoneProcent;
-
-
+    private TextView workDonePercent;
+    private ToDoHelper toDoHelper;
+    private Servis servis = Servis.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        toDoHelper = new ToDoHelper(this);
         personalTodoNumber = findViewById(R.id.personal_value_text_id);
         businessTodoNumber = findViewById(R.id.business_value_text_id);
-        workDoneProcent = findViewById(R.id.work_done_id);
+        workDonePercent = findViewById(R.id.work_done_id);
 
         list = findViewById(R.id.todo_list_id);
         layoutManager = new LinearLayoutManager(this);
         list.setLayoutManager(layoutManager);
-        adapter = new ToDoListAdapter(Servis.getInstance().getList());
+        servis.setContext(getApplicationContext());
+        adapter = new ToDoListAdapter(servis.getList());
         list.setAdapter(adapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(list.getContext(), DividerItemDecoration.VERTICAL);
         list.addItemDecoration(dividerItemDecoration);
@@ -56,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), AddToDo.class);
-//                startActivity(intent);
                 startActivityForResult(intent, TEMP);
             }
         });
@@ -68,15 +71,8 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == TEMP) {
-            model = Servis.getInstance().getList().get(0);
+            model = servis.getList().get(servis.getList().size() - 1);
             adapter.notifyItemChanged(0, model);
-//            if (model != null) {
-//                if (model.getType().equals("Personal")) {
-//                    String text = (Integer.parseInt(personalTodoNumber.getText().toString()) + 1)+"";
-//                    personalTodoNumber.setText(text);
-//                }
-//                else businessTodoNumber.setText(model.getType());
-//            }
             if (model != null) {
                 if (model.getType() == ToDoTypeAccess.BUSINESS_TYPE) {
                     String text = (Integer.parseInt(businessTodoNumber.getText().toString()) + 1)+"";
