@@ -33,6 +33,7 @@ public class AddToDo extends AppCompatActivity {
         final Spinner spinner = findViewById(R.id.type_spinner_id);
         spinner.setAdapter(adapter);
 
+        //TODO: vochinch vor amen mi editView-i hamar taza EditText em sarqum? aveli lav motecum chka?
         EditText editField = findViewById(R.id.title_edit_id);
         editField.addTextChangedListener(new TextWatcher() {
             @Override
@@ -108,11 +109,10 @@ public class AddToDo extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                model.setType(spinner.getSelectedItemPosition());//.getSelectedItem().toString());
-                Log.d("Log11", "onClick: p = " + spinner.getSelectedItemPosition());
+                model.setType(spinner.getSelectedItemPosition());
                 servis.setContext(getApplicationContext());
                 servis.addToDo(model );
-                servis.addToDoDB(model);
+                model.setID(servis.addToDoDB(model));
                 finish();
             }
         });

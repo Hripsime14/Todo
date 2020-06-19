@@ -18,6 +18,7 @@
     <string name="edit_time">Time</string>
     <string name="notification">Notification</string>
     <string name="add_your_thing">ADD YOUR THING</string>
+    <string name="remove">Remove</string>
     <string-array name="todo_types">
         <item>Business</item>
         <item>Personal</item>

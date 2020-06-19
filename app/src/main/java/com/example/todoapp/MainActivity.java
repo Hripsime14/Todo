@@ -6,22 +6,14 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.todoapp.Backend.ToDoHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView list;
@@ -41,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         toDoHelper = new ToDoHelper(this);
+        servis.setContext(getApplicationContext());
         personalTodoNumber = findViewById(R.id.personal_value_text_id);
         businessTodoNumber = findViewById(R.id.business_value_text_id);
         workDonePercent = findViewById(R.id.work_done_id);
@@ -48,8 +41,7 @@ public class MainActivity extends AppCompatActivity {
         list = findViewById(R.id.todo_list_id);
         layoutManager = new LinearLayoutManager(this);
         list.setLayoutManager(layoutManager);
-        servis.setContext(getApplicationContext());
-        adapter = new ToDoListAdapter(servis.getList());
+        adapter = new ToDoListAdapter(servis.getList(), getApplicationContext());
         list.setAdapter(adapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(list.getContext(), DividerItemDecoration.VERTICAL);
         list.addItemDecoration(dividerItemDecoration);
@@ -72,7 +64,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == TEMP) {
             model = servis.getList().get(servis.getList().size() - 1);
-            adapter.notifyItemChanged(0, model);
+            adapter.addItem(model); //TODO: vonc a jisht notify anel, adapter-ic? te estexic?
+//            adapter.notifyItemInserted(servis.getList().size() - 1);//.notifyItemChanged(servis.getList().size() - 1, model);
             if (model != null) {
                 if (model.getType() == ToDoTypeAccess.BUSINESS_TYPE) {
                     String text = (Integer.parseInt(businessTodoNumber.getText().toString()) + 1)+"";

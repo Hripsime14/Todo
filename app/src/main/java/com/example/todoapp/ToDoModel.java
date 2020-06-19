@@ -12,6 +12,10 @@ public class ToDoModel {
         return ID;
     }
 
+    public void setID(long id) {
+        ID = id;
+    }
+
     public int getType() {
         return type;
     }

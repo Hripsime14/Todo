@@ -54,4 +54,14 @@
         android:text="@string/time"
         android:textColor="@color/colorGrey"/>
 
+    <Button
+        android:id="@+id/remove_button_id"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/remove"
+        android:textColor="@color/colorBlack"
+        android:background="@color/colorWhite"
+        />
+
 </LinearLayout>
