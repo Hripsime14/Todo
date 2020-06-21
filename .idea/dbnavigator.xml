@@ -25,10 +25,10 @@
     <show-object-properties value="true" />
     <loaded-nodes>
       <connection connection-id="8ae6cfd7-e8d2-4469-bbea-7ab150316b4a">
-        <schema name="main" object-types="table, view, constraint, column, dataset trigger, index" />
+        <schema name="main" object-types="table, view" />
       </connection>
       <connection connection-id="f31e6eda-779a-4554-9744-62170b8a4823">
-        <schema name="main" object-types="table, view, constraint, column, dataset trigger, index" />
+        <schema name="main" object-types="table, view" />
       </connection>
     </loaded-nodes>
   </component>
@@ -48,9 +48,9 @@
     <connection id="f31e6eda-779a-4554-9744-62170b8a4823" />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
-    <filter-actions connection-id="f31e6eda-779a-4554-9744-62170b8a4823" dataset="main.todo_table" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="8ae6cfd7-e8d2-4469-bbea-7ab150316b4a" dataset="main.todo_table" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="8ae6cfd7-e8d2-4469-bbea-7ab150316b4a" dataset="main.sqlite_sequence" active-filter-id="" />
+    <filter-actions connection-id="f31e6eda-779a-4554-9744-62170b8a4823" dataset="main.todo_table" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers />

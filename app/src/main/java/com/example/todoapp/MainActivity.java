@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -19,13 +20,16 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView list;
     private ToDoListAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
-    private static final int TEMP = 1;
+    private static final int ADD_INTENT = 1;
+    private static final int EDIT_INTENT = 2;
     private TextView personalTodoNumber;
     private TextView businessTodoNumber;
     private ToDoModel model;
     private TextView workDonePercent;
     private ToDoHelper toDoHelper;
     private Servis servis = Servis.getInstance();
+    private int pos;
+    private long ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +45,25 @@ public class MainActivity extends AppCompatActivity {
         list = findViewById(R.id.todo_list_id);
         layoutManager = new LinearLayoutManager(this);
         list.setLayoutManager(layoutManager);
-        adapter = new ToDoListAdapter(servis.getList(), getApplicationContext());
+        //TODO:jshtel te stex arajin argument-@ pass by reference a?, vor krknaki a arajin TODO-n nkarum?
+        Log.d("logStart", "onCreate: size = " + servis.getList());
+        adapter = new ToDoListAdapter(servis.getList(), getApplicationContext(), new ToDoListAdapter.RecyclerViewClickListener() {
+            @Override
+            public void recyclerViewListClicked(View v, int position, long id) {
+                pos = position;
+                ID = id;
+                Intent intent = new Intent(getApplicationContext(), AddToDo.class);
+                Log.d("logtouch", "onTouchEvent: position is " + position);
+                Log.d("logtouch", "onTouchEvent: id is " + id);
+                intent.putExtra(AddToDo.ID, id);
+                intent.putExtra(AddToDo.POSITION, position);
+                startActivityForResult(intent, EDIT_INTENT);
+            }
+        });
         list.setAdapter(adapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(list.getContext(), DividerItemDecoration.VERTICAL);
         list.addItemDecoration(dividerItemDecoration);
+
 
 
         FloatingActionButton plusButton = findViewById(R.id.fab_id);
@@ -52,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), AddToDo.class);
-                startActivityForResult(intent, TEMP);
+                startActivityForResult(intent, ADD_INTENT);
             }
         });
     }
@@ -62,8 +81,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == TEMP) {
-            model = servis.getList().get(servis.getList().size() - 1);
+        if (requestCode == ADD_INTENT) {
+            Log.d("logintent", "onActivityResult: it;s in the add_intent");
+            if (servis.getList().size() > 0) {
+                model = servis.getList().get(servis.getList().size() - 1);
+            }
+            adapter.notifyDataSetChanged();
             adapter.addItem(model); //TODO: vonc a jisht notify anel, adapter-ic? te estexic?
 //            adapter.notifyItemInserted(servis.getList().size() - 1);//.notifyItemChanged(servis.getList().size() - 1, model);
             if (model != null) {
@@ -73,6 +96,12 @@ public class MainActivity extends AppCompatActivity {
                 } else if (model.getType() == ToDoTypeAccess.PERSONAL_TYPE){
                     String text = (Integer.parseInt(personalTodoNumber.getText().toString()) + 1)+"";
                     personalTodoNumber.setText(text);
+                }
+            }
+        } else if (requestCode == EDIT_INTENT) {
+            for(ToDoModel toDoModel : servis.getList()) {
+                if (toDoModel.getID() == ID) {
+                    adapter.editItem(pos, toDoModel);
                 }
             }
         }

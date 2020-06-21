@@ -1,6 +1,7 @@
 package com.example.todoapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,23 +20,41 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
     private List<ToDoModel> list;
     Context context;
     Servis servis;
+    private RecyclerViewClickListener listener;
+
+    public interface RecyclerViewClickListener {
+        void recyclerViewListClicked(View v, int position, long id);
+    }
+
+    ToDoListAdapter(List<ToDoModel> list, Context context, RecyclerViewClickListener listener) {
+        this.list = list;
+        this.context = context;
+        servis = Servis.getInstance();
+        servis.setContext(context);
+        this.listener = listener;
+    }
+
 
     public void addItem(ToDoModel model) {
         if (list == null) {
             list = new ArrayList<>();
         }
         if (model != null) {
+            Log.d("logaddd", "addItem: adding from here, when size is  " + list.size());
             this.list.add(model);
+            Log.d("logaddd", "addItem: adding from here, final size is  " + list.size());
         }
         notifyItemInserted(list.size() - 1);
     }
 
-    ToDoListAdapter(List<ToDoModel> list, Context context) {
-        this.list = list;
-        this.context = context;
-        servis = Servis.getInstance();
-        servis.setContext(context);
+    public void editItem(int pos, ToDoModel model) {
+        if (model != null) {
+            this.list.set(pos, model);
+        }
+        notifyDataSetChanged();
+//        notifyItemChanged(pos);
     }
+
 
     @NonNull
     @Override
@@ -47,7 +66,7 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ToDoListAdapter.MyViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final ToDoListAdapter.MyViewHolder holder, final int position) {
         final ToDoModel model = list.get(position);
         if (model.getType() == ToDoTypeAccess.BUSINESS_TYPE) holder.type.setText(R.string.business);
         else holder.type.setText(R.string.personal);
@@ -63,6 +82,15 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
 //                notifyItemRemoved(position);
 // TODO: jokel te es erku notify-eri tarberutyuny vorn a? nuyn effectn unen
                 notifyDataSetChanged();
+            }
+        });
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+                    listener.recyclerViewListClicked(holder.itemView, position, model.getID());
+                }
             }
         });
     }

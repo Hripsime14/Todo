@@ -65,6 +65,27 @@ public class Servis {
         return false;
     }
 
+    /*public boolean updateToDo(long ID, ToDoModel model) {
+        if (ID > 0 && model != null) {
+            for (ToDoModel toDoModel : modelList) {
+                if (ID == toDoModel.getID()) {
+                    toDoModel = model;
+                }
+            }
+        }
+        return false;
+    }*/
+
+    public boolean updateToDoDB(long ID, ToDoModel model) {
+        boolean isUpdated = false;
+        if (ID > 0 && model != null) {
+            toDoHelper  = new ToDoHelper(context);
+            isUpdated = toDoHelper.updateData(ID, model) > 0;
+            modelList = this.getList();
+        }
+        return isUpdated;
+    }
+
     public List<ToDoModel> getList() {
         toDoHelper = new ToDoHelper(context);
         Cursor cursor = toDoHelper.getAllData();

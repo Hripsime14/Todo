@@ -1,10 +1,13 @@
 package com.example.todoapp.Backend;
 
+import android.app.TaskStackBuilder;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.example.todoapp.ToDoModel;
 
 public class ToDoHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
@@ -48,7 +51,7 @@ public class ToDoHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getAllData() {
-        db = getWritableDatabase();
+        db = this.getWritableDatabase();
         return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
     }
 
@@ -57,5 +60,19 @@ public class ToDoHelper extends SQLiteOpenHelper {
         String temp = id + "";
         int deleteResult = db.delete(TABLE_NAME, "ID=?", new String[]{temp});
         return deleteResult;
+    }
+
+    public int updateData(long id, ToDoModel model) {
+        db = this.getWritableDatabase();
+        String temp = id + "";
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ID_COL_1, id);
+        contentValues.put(TYPE_COL_2, model.getType());
+        contentValues.put(TITLE_COL_3, model.getTitle());
+        contentValues.put(PLACE_COL_4, model.getPlace());
+        contentValues.put(TIME_COL_5, model.getTime());
+        contentValues.put(NOTIFICATION_COL_6, model.getNotification());
+        int updateResult = db.update(TABLE_NAME, contentValues, "ID=?", new String[]{temp});
+        return updateResult;
     }
 }
