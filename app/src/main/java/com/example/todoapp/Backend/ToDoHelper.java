@@ -12,12 +12,6 @@ public class ToDoHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "ToDo.db";
     public static final String TABLE_NAME = "todo_table";
-    public static final String ID_COL_1 = "ID";
-    public static final String TYPE_COL_2 = "TYPE";
-    public static final String TITLE_COL_3 = "TITLE";
-    public static final String PLACE_COL_4 = "PLACE";
-    public static final String TIME_COL_5 = "TIME";
-    public static final String NOTIFICATION_COL_6 = "NOTIFICATION";
     private SQLiteDatabase db;
 
     public ToDoHelper(Context context) {
@@ -26,9 +20,9 @@ public class ToDoHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE table " + TABLE_NAME + " (" + ID_COL_1 +
-                " INTEGER PRIMARY KEY AUTOINCREMENT," + TYPE_COL_2 + " INTEGER," + TITLE_COL_3 + " TEXT," +
-                PLACE_COL_4 + " TEXT," + TIME_COL_5 + " TEXT," + NOTIFICATION_COL_6 + " TEXT)");
+        db.execSQL("CREATE table " + TABLE_NAME + " (" + Columns.ID_COL_1 +
+                " INTEGER PRIMARY KEY AUTOINCREMENT," + Columns.TYPE_COL_2 + " INTEGER," + Columns.TITLE_COL_3 + " TEXT," +
+                Columns.PLACE_COL_4 + " TEXT," + Columns.TIME_COL_5 + " TEXT," + Columns.NOTIFICATION_COL_6 + " TEXT)");
     }
 
     @Override
@@ -37,16 +31,9 @@ public class ToDoHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public long insertData(String type, String title, String place, String time, String notification) {
+    public long insertData(ToDoModel model) {
         db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(TYPE_COL_2, type);
-        contentValues.put(TITLE_COL_3, title);
-        contentValues.put(PLACE_COL_4, place);
-        contentValues.put(TIME_COL_5, time);
-        contentValues.put(NOTIFICATION_COL_6, notification);
-        long insertResult = db.insert(TABLE_NAME, null, contentValues);
-        return insertResult;
+        return db.insert(TABLE_NAME, null, tempMethod(model, null));
     }
 
     public Cursor getAllData() {
@@ -56,22 +43,34 @@ public class ToDoHelper extends SQLiteOpenHelper {
 
     public int removeData(long id) {
         db = this.getWritableDatabase();
-        String temp = id + "";
-        int deleteResult = db.delete(TABLE_NAME, "ID=?", new String[]{temp});
-        return deleteResult;
+        String stringId = id + "";
+        return db.delete(TABLE_NAME, "ID=?", new String[]{stringId});
     }
 
     public int updateData(long id, ToDoModel model) {
         db = this.getWritableDatabase();
-        String temp = id + "";
+        String stringId = id + "";
+        return db.update(TABLE_NAME, tempMethod(model, stringId), "ID=?", new String[]{stringId});
+    }
+
+    private ContentValues tempMethod(ToDoModel model, String id) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ID_COL_1, id);
-        contentValues.put(TYPE_COL_2, model.getType());
-        contentValues.put(TITLE_COL_3, model.getTitle());
-        contentValues.put(PLACE_COL_4, model.getPlace());
-        contentValues.put(TIME_COL_5, model.getTime());
-        contentValues.put(NOTIFICATION_COL_6, model.getNotification());
-        int updateResult = db.update(TABLE_NAME, contentValues, "ID=?", new String[]{temp});
-        return updateResult;
+        if (id != null) contentValues.put(Columns.ID_COL_1, id);
+        //TODO: bazayum ID hamarakalum@ 1-ic a sksvum te 0-ic?
+        contentValues.put(Columns.TYPE_COL_2, model.getType());
+        contentValues.put(Columns.TITLE_COL_3, model.getTitle());
+        contentValues.put(Columns.PLACE_COL_4, model.getPlace());
+        contentValues.put(Columns.TIME_COL_5, model.getTime());
+        contentValues.put(Columns.NOTIFICATION_COL_6, model.getNotification());
+        return contentValues;
+    }
+
+    private static class Columns {
+        public static final String ID_COL_1 = "ID";
+        public static final String TYPE_COL_2 = "TYPE";
+        public static final String TITLE_COL_3 = "TITLE";
+        public static final String PLACE_COL_4 = "PLACE";
+        public static final String TIME_COL_5 = "TIME";
+        public static final String NOTIFICATION_COL_6 = "NOTIFICATION";
     }
 }

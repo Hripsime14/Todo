@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -55,77 +54,18 @@ public class AddToDo extends AppCompatActivity {
             }
         });
 
-        //TODO: vochinch vor amen mi editView-i hamar taza EditText em sarqum? aveli lav motecum chka?
         EditText titleEditField = findViewById(R.id.title_edit_id);
-        titleEditField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        titleEditField.addTextChangedListener(new ToDoTextWatcher(titleEditField));
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                model.setTitle(s.toString());
-            }
-        });
         EditText placeEditField = findViewById(R.id.place_edit_id);
-        placeEditField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        placeEditField.addTextChangedListener(new ToDoTextWatcher(placeEditField));
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                model.setPlace(s.toString());
-                if (model != null)
-                    Log.d("Log0", "space is " + model.getPlace() + ", and title is " + model.getTitle());
-            }
-        });
         EditText timeEditField = findViewById(R.id.time_edit_id);
-        timeEditField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        timeEditField.addTextChangedListener(new ToDoTextWatcher(timeEditField));
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                model.setTime(s.toString());
-            }
-        });
         EditText notificEditField = findViewById(R.id.notification_edit_id);
-        notificEditField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        notificEditField.addTextChangedListener(new ToDoTextWatcher(notificEditField));
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                model.setNotification(s.toString());
-            }
-        });
         if (id > -1) {
             for (ToDoModel model1 : service.getList())  {
                 if (model1.getID() == id)  {
@@ -163,6 +103,38 @@ public class AddToDo extends AppCompatActivity {
                 finish();
             }
         });
+    }
 
+    private class ToDoTextWatcher implements TextWatcher {
+        private View view;
+
+        private ToDoTextWatcher(View view) {
+            this.view = view;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            String text = s.toString();
+            switch (view.getId()) {
+                case R.id.title_edit_id:
+                    model.setTitle(text); break;
+                case R.id.place_edit_id:
+                    model.setPlace(text); break;
+                case R.id.time_edit_id:
+                    model.setTime(text); break;
+                case R.id.notification_edit_id:
+                    model.setNotification(text); break;
+            }
+        }
     }
 }

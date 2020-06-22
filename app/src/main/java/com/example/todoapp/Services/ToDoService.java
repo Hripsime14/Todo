@@ -16,55 +16,29 @@ public class ToDoService {
     //TODO: haskanal te vonc pass anel contexty, erb unenq singleton, u kara memory leak arajacni
     private ToDoHelper toDoHelper;
 
-    private ToDoService() {
-        instance = this;
-    }
-
     public static ToDoService getInstance() {
-        return new ToDoService();
+        if (instance == null) {
+            instance = new ToDoService();
+        }
+        return instance;
     }
 
     public void setContext(Context context) {
         this.context = context;
     }
 
-    public void addToDo(ToDoModel model) {
-        if (modelList == null) {
-            modelList = new ArrayList<>();
-        }
-        modelList.add(model);
-    }
 
     public long addToDoDB(ToDoModel model) {
         if (model != null && context != null) {
             toDoHelper  = new ToDoHelper(context);
-            long addResult = toDoHelper.insertData(model.getType() + "", model.getTitle(), model.getPlace(),
-                    model.getTime(), model.getNotification());
-            addToDo(model);
-            return addResult;
+            return toDoHelper.insertData(model);
         } else return -1;
     }
 
     public boolean removeToDoDB(long ID) {
         if (ID > 0) {
             toDoHelper  = new ToDoHelper(context);
-            int removeResult = toDoHelper.removeData(ID);
-            if (removeResult > 0) {
-//                removeToDo(ID);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean removeToDo(long ID) {
-        if (ID > 0) {
-            for (ToDoModel model : modelList) {
-                if (model.getID() == ID) {
-                    modelList.remove(model);
-                    return true;
-                }
-            }
+            return toDoHelper.removeData(ID) > 0;
         }
         return false;
     }
@@ -75,7 +49,6 @@ public class ToDoService {
         if (ID > 0 && model != null) {
             toDoHelper  = new ToDoHelper(context);
             isUpdated = toDoHelper.updateData(ID, model) > 0;
-            modelList = this.getList();
         }
         return isUpdated;
     }
