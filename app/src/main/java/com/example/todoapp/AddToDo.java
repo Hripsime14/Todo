@@ -2,43 +2,38 @@ package com.example.todoapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 
+import com.example.todoapp.Models.ToDoModel;
+import com.example.todoapp.Services.ToDoService;
+
 public class AddToDo extends AppCompatActivity {
-    public static String POSITION = "-1";
     public static String ID = "ID";
     private long id = -1;
-    private int position = -1;
     private ToDoModel model = new ToDoModel();
-    private Servis servis = Servis.getInstance();
+    private ToDoService service = ToDoService.getInstance();
     private Spinner spinner;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_to_do);
-        servis.setContext(getApplicationContext());
+        service.setContext(getApplicationContext());
 
-        Intent intent = getIntent();
+        intent = getIntent();
         id = intent.getLongExtra(ID, -1);
-        position = intent.getIntExtra(POSITION, -1);
-
-        Log.d("logintent", "onCreate: ID = " + ID);
-        Log.d("logintent", "onCreate: POSITION = " + POSITION);
-
-        Log.d("logintent", "onCreate: id = " + id);
-        Log.d("logintent", "onCreate: position = " + position);
 
         ArrayAdapter spinnerAdapter = ArrayAdapter.createFromResource(
                 this,
@@ -131,8 +126,13 @@ public class AddToDo extends AppCompatActivity {
                 model.setNotification(s.toString());
             }
         });
-        if (position > -1 && id > -1) {
-            model = servis.getList().get(position);
+        if (id > -1) {
+            for (ToDoModel model1 : service.getList())  {
+                if (model1.getID() == id)  {
+                    model = model1;
+                    break;
+                }
+            }
 
             spinner.setSelection(model.getType());
             titleEditField.setText(model.getTitle());
@@ -146,16 +146,20 @@ public class AddToDo extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 model.setType(spinner.getSelectedItemPosition());
-//                servis.setContext(getApplicationContext());
-
-                if (position > -1 && id > -1) {
-                    servis.updateToDoDB(id, model);
-//                    servis.updateToDo(id, model);
+                if (id > -1) {
+                    if (service.updateToDoDB(id, model)) {
+                        intent.putExtra("result", "done");
+                        setResult(Activity.RESULT_OK, intent);
+                    }
                 } else {
-                    servis.addToDo(model);
-                    model.setID(servis.addToDoDB(model));
+                    long addResult = service.addToDoDB(model);
+                    if (addResult > 0) {
+                        intent.putExtra("result", "done");
+                        setResult(Activity.RESULT_OK, intent);
+                    }
+                    model.setID(addResult);
                 }
-                position = -1; id = -1;
+                id = -1;
                 finish();
             }
         });

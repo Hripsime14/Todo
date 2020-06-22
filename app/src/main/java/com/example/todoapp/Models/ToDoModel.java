@@ -1,4 +1,4 @@
-package com.example.todoapp;
+package com.example.todoapp.Models;
 
 public class ToDoModel {
     private long ID;

@@ -1,27 +1,27 @@
-package com.example.todoapp;
+package com.example.todoapp.Services;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 
 import com.example.todoapp.Backend.ToDoHelper;
+import com.example.todoapp.Models.ToDoModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Servis {
+public class ToDoService {
     private Context context;
     private static List<ToDoModel> modelList;
-    private static Servis instance;
+    private static ToDoService instance;
     //TODO: haskanal te vonc pass anel contexty, erb unenq singleton, u kara memory leak arajacni
     private ToDoHelper toDoHelper;
 
-    private Servis() {
+    private ToDoService() {
         instance = this;
     }
 
-    public static Servis getInstance() {
-        return new Servis();
+    public static ToDoService getInstance() {
+        return new ToDoService();
     }
 
     public void setContext(Context context) {
@@ -40,6 +40,7 @@ public class Servis {
             toDoHelper  = new ToDoHelper(context);
             long addResult = toDoHelper.insertData(model.getType() + "", model.getTitle(), model.getPlace(),
                     model.getTime(), model.getNotification());
+            addToDo(model);
             return addResult;
         } else return -1;
     }
@@ -48,7 +49,10 @@ public class Servis {
         if (ID > 0) {
             toDoHelper  = new ToDoHelper(context);
             int removeResult = toDoHelper.removeData(ID);
-            return removeResult > 0;
+            if (removeResult > 0) {
+//                removeToDo(ID);
+                return true;
+            }
         }
         return false;
     }
@@ -65,16 +69,6 @@ public class Servis {
         return false;
     }
 
-    /*public boolean updateToDo(long ID, ToDoModel model) {
-        if (ID > 0 && model != null) {
-            for (ToDoModel toDoModel : modelList) {
-                if (ID == toDoModel.getID()) {
-                    toDoModel = model;
-                }
-            }
-        }
-        return false;
-    }*/
 
     public boolean updateToDoDB(long ID, ToDoModel model) {
         boolean isUpdated = false;

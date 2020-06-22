@@ -1,7 +1,6 @@
 package com.example.todoapp;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,24 +12,28 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.todoapp.Models.ToDoModel;
+import com.example.todoapp.Services.ToDoService;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyViewHolder> {
     private List<ToDoModel> list;
     Context context;
-    Servis servis;
+    ToDoService toDoService;
     private RecyclerViewClickListener listener;
 
     public interface RecyclerViewClickListener {
         void recyclerViewListClicked(View v, int position, long id);
     }
 
-    ToDoListAdapter(List<ToDoModel> list, Context context, RecyclerViewClickListener listener) {
+    ToDoListAdapter(List<ToDoModel> list, Context context, ToDoService service, RecyclerViewClickListener listener) {
         this.list = list;
         this.context = context;
-        servis = Servis.getInstance();
-        servis.setContext(context);
+//        toDoService = ToDoService.getInstance();
+        this.toDoService = service;
+//        toDoService.setContext(context);
         this.listener = listener;
     }
 
@@ -40,9 +43,7 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
             list = new ArrayList<>();
         }
         if (model != null) {
-            Log.d("logaddd", "addItem: adding from here, when size is  " + list.size());
             this.list.add(model);
-            Log.d("logaddd", "addItem: adding from here, final size is  " + list.size());
         }
         notifyItemInserted(list.size() - 1);
     }
@@ -52,7 +53,6 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
             this.list.set(pos, model);
         }
         notifyDataSetChanged();
-//        notifyItemChanged(pos);
     }
 
 
@@ -76,12 +76,17 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
         holder.removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                servis.removeToDoDB(model.getID());
-                servis.removeToDo(model.getID());
-                if (list.size() > 0) list.remove(position);
+                Log.d("logdeletesize", "onClick:1 list size is  = "  + list.size());
+                boolean isDeleted = toDoService.removeToDoDB(model.getID());
+                Log.d("logdeletesize", "onClick:2 list size is  = "  + list.size());
+//                if (list.size() > 0 && isDeleted) list.remove(position);
+                list = toDoService.getList();
+                Log.d("logdeletesize", "onClick:3 list size is  = "  + list.size());
 //                notifyItemRemoved(position);
+
 // TODO: jokel te es erku notify-eri tarberutyuny vorn a? nuyn effectn unen
                 notifyDataSetChanged();
+                Log.d("logdeletesize", "onClick:4 list size is  = "  + list.size());
             }
         });
 

@@ -1,13 +1,12 @@
 package com.example.todoapp.Backend;
 
-import android.app.TaskStackBuilder;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.todoapp.ToDoModel;
+import com.example.todoapp.Models.ToDoModel;
 
 public class ToDoHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
