@@ -20,8 +20,8 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private ToDoListAdapter adapter;
-    private static final int ADD_INTENT = 1;
-    private static final int EDIT_INTENT = 2;
+    private static final int ADD_TODO_REQUEST_CODE = 1;
+    private static final int EDIT_TODO_REQUEST_CODE = 2;
     private TextView personalTodoNumber;
     private TextView businessTodoNumber;
     private TextView workDonePercent;
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                 pos = position;
                 Intent intent = new Intent(getApplicationContext(), AddToDo.class);
                 intent.putExtra(AddToDo.ID, id);
-                startActivityForResult(intent, EDIT_INTENT);
+                startActivityForResult(intent, EDIT_TODO_REQUEST_CODE);
             }
         });
         list.setAdapter(adapter);
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), AddToDo.class);
-                startActivityForResult(intent, ADD_INTENT);
+                startActivityForResult(intent, ADD_TODO_REQUEST_CODE);
             }
         });
     }
@@ -72,10 +72,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         String extra = "result";
-        if (requestCode == ADD_INTENT && data != null && data.hasExtra(extra)
+        if (requestCode == ADD_TODO_REQUEST_CODE && data != null && data.hasExtra(extra)
                 && Objects.equals(data.getStringExtra(extra), "done")) {
             adapter.addItem();
-        } else if (requestCode == EDIT_INTENT && data != null && data.hasExtra(extra)
+        } else if (requestCode == EDIT_TODO_REQUEST_CODE && data != null && data.hasExtra(extra)
                 && Objects.equals(data.getStringExtra(extra), "done")) {
             adapter.editItem(pos);
         }

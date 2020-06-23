@@ -1,5 +1,6 @@
 package com.example.todoapp;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -24,6 +25,8 @@ public class AddToDo extends AppCompatActivity {
     private ToDoService service = ToDoService.getInstance();
     private Spinner spinner;
     private Intent intent;
+    private static final int MAP_REQUEST_CODE = 1;
+    private EditText placeEditField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +48,15 @@ public class AddToDo extends AppCompatActivity {
         spinner = findViewById(R.id.type_spinner_id);
         spinner.setAdapter(spinnerAdapter);
 
+        ImageButton deleteButton = findViewById(R.id.delete_place_button_id);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                placeEditField.setText("");
+                model.setPlace("");
+                //TODO: es iqsikic sax editTexteri mot dnel, u dranc onClick-i mej mi methodov pordzel anel
+            }
+        });
 
         ImageButton backButton = findViewById(R.id.back_button_id);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -57,8 +69,16 @@ public class AddToDo extends AppCompatActivity {
         EditText titleEditField = findViewById(R.id.title_edit_id);
         titleEditField.addTextChangedListener(new ToDoTextWatcher(titleEditField));
 
-        EditText placeEditField = findViewById(R.id.place_edit_id);
-        placeEditField.addTextChangedListener(new ToDoTextWatcher(placeEditField));
+        placeEditField = findViewById(R.id.place_edit_id);
+        placeEditField.setShowSoftInputOnFocus(false);
+        placeEditField.setCursorVisible(false);
+        placeEditField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(getApplicationContext(), MapsActivity.class), MAP_REQUEST_CODE);
+            }
+        });
+//        placeEditField.addTextChangedListener(new ToDoTextWatcher(placeEditField));
 
         EditText timeEditField = findViewById(R.id.time_edit_id);
         timeEditField.addTextChangedListener(new ToDoTextWatcher(timeEditField));
@@ -103,6 +123,19 @@ public class AddToDo extends AppCompatActivity {
                 finish();
             }
         });
+
+    }
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        String extra = "name";
+        if (requestCode == MAP_REQUEST_CODE && data != null && data.hasExtra(extra)) {
+            placeEditField.setText(data.getStringExtra(extra));
+            model.setPlace(placeEditField.getText().toString());
+        }
     }
 
     private class ToDoTextWatcher implements TextWatcher {

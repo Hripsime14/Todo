@@ -80,12 +80,23 @@
         android:shadowColor="@color/colorWhite"
         android:backgroundTint="@color/colorWhite"
         android:textCursorDrawable="@drawable/cursor"
+        android:inputType="none"
         android:layout_marginTop="20sp"
         android:layout_marginEnd="20sp"
         android:layout_marginStart="20sp"
+        android:focusable="false"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_edit_id"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageButton
+        android:id="@+id/delete_place_button_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/close"
+        app:layout_constraintEnd_toEndOf="@id/place_edit_id"
+        app:layout_constraintTop_toTopOf="@id/place_edit_id"
+        app:layout_constraintBottom_toBottomOf="@id/place_edit_id"/>
 
 
     <EditText
