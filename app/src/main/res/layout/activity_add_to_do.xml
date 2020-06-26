@@ -84,6 +84,7 @@
         android:layout_marginTop="20sp"
         android:layout_marginEnd="20sp"
         android:layout_marginStart="20sp"
+        android:paddingEnd="20dp"
         android:focusable="false"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_edit_id"
@@ -99,22 +100,89 @@
         app:layout_constraintBottom_toBottomOf="@id/place_edit_id"/>
 
 
-    <EditText
-        android:id="@+id/time_edit_id"
+    <LinearLayout
+        android:id="@+id/date_time_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/edit_time"
-        android:textColor="@color/colorWhite"
-        android:textColorHint="@color/colorGrey"
-        android:shadowColor="@color/colorWhite"
-        android:backgroundTint="@color/colorWhite"
-        android:textCursorDrawable="@drawable/cursor"
-        android:layout_marginTop="20sp"
-        android:layout_marginEnd="20sp"
-        android:layout_marginStart="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/place_edit_id"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5">
+
+            <EditText
+                android:id="@+id/date_edit_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/edit_date"
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/colorGrey"
+                android:shadowColor="@color/colorWhite"
+                android:backgroundTint="@color/colorWhite"
+                android:textCursorDrawable="@drawable/cursor"
+                android:layout_marginTop="20sp"
+                android:layout_marginEnd="20sp"
+                android:layout_marginStart="20sp"
+                android:focusable="false"
+                android:layout_weight="0.5"/>
+
+            <ImageButton
+                android:id="@+id/delete_date_button_id"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/close"
+                android:background="@drawable/transparent_background"
+                android:layout_alignTop="@id/date_edit_id"
+                android:layout_alignBottom="@id/date_edit_id"
+                android:layout_alignEnd="@id/date_edit_id" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"  >
+
+
+            <EditText
+                android:id="@+id/time_edit_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/edit_time"
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/colorGrey"
+                android:shadowColor="@color/colorWhite"
+                android:backgroundTint="@color/colorWhite"
+                android:textCursorDrawable="@drawable/cursor"
+                android:layout_marginTop="20sp"
+                android:layout_marginEnd="20sp"
+                android:layout_marginStart="20sp"
+                android:focusable="false"/>
+
+
+            <ImageButton
+                android:id="@+id/delete_time_button_id"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/close"
+                android:background="@drawable/transparent_background"
+                android:layout_alignTop="@id/time_edit_id"
+                android:layout_alignBottom="@id/time_edit_id"
+                android:layout_alignEnd="@id/time_edit_id" />
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+
 
 
 
@@ -132,7 +200,7 @@
         android:layout_marginEnd="20sp"
         android:layout_marginStart="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/time_edit_id"
+        app:layout_constraintTop_toBottomOf="@id/date_time_id"
         app:layout_constraintEnd_toEndOf="parent" />
 
 

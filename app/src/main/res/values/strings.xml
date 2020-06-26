@@ -15,6 +15,7 @@
     <string name="type">Type</string>
     <string name="title">Title</string>
     <string name="place">Place</string>
+    <string name="edit_date">Date</string>
     <string name="edit_time">Time</string>
     <string name="notification">Notification</string>
     <string name="add_your_thing">ADD YOUR THING</string>

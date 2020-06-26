@@ -26,5 +26,9 @@
         <item name="android:dropDownListViewStyle">@style/MatchSpinnerStyle</item>
     </style>
 
+    <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorLightBlue</item>
+        <item name="android:text">@color/colorBlack</item>
+    </style>
 
 </resources>

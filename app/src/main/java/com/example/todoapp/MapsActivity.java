@@ -12,6 +12,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -19,7 +20,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -27,11 +31,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback{
+
 
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
-    private static final int locationRequestCode = 1000;
+    private static final int LOCATION_REQUEST_CODE = 1000;
     private double latitude = 0.0, longitude = 0.0;
 
     @Override
@@ -43,7 +48,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         if (mapFragment != null) mapFragment.getMapAsync(this);
-
 
     }
 
@@ -59,16 +63,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.getUiSettings().setMapToolbarEnabled(false); //These are for removing buttons referring to google map
+        mMap.getUiSettings().setZoomControlsEnabled(false);
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                mMap.clear();
+                addMarker(latLng);
+                latitude = latLng.latitude;
+                longitude = latLng.longitude;
+            }
+        });
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                    locationRequestCode);
+                    LOCATION_REQUEST_CODE);
         } else {
             showLocation();
         }
+
+        mMap.setMyLocationEnabled(true);
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                Log.d("logmarkerclick", "onMarkerClick: marker is clicked");
+                return false;
+            }
+        });
+//        mMap.setOnInfoWindowClickListener(this);
+//        mMap.setOnMarkerDragListener(this);
     }
 
     void showLocation() {
@@ -76,24 +102,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
                 @Override
-                public void onSuccess(Location location) {
+                public void onSuccess(Location location) { //TODO: jshtel te ed lav practive a listeneri mej myusy kanchel
 
                     if (location != null) {
                         latitude = location.getLatitude();
                         longitude = location.getLongitude();
                         LatLng currentLoc = new LatLng(latitude, longitude);
-                        mMap.addMarker(new MarkerOptions().position(currentLoc).title("Marker in current location"));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLoc, 16));
+                        mMap.clear();
+                        addMarker(currentLoc);
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLoc, 10));
                     }
                 }
             });
         }
     }
 
+    void addMarker(LatLng latLng) {
+        mMap.addMarker(new MarkerOptions().position(latLng).title("Marker is dropped")).setDraggable(true);
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == locationRequestCode) {
+        if (requestCode == LOCATION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                         && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {

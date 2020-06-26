@@ -60,7 +60,17 @@ public class ToDoHelper extends SQLiteOpenHelper {
         contentValues.put(Columns.TYPE_COL_2, model.getType());
         contentValues.put(Columns.TITLE_COL_3, model.getTitle());
         contentValues.put(Columns.PLACE_COL_4, model.getPlace());
-        contentValues.put(Columns.TIME_COL_5, model.getTime());
+        //TODO: shat em tuftel stex?
+//        if (model.getDate().equals("")) model.setDate(null);
+//        if (model.getTime().equals("")) model.setTime(null);
+        if (model.getDate() != null && model.getTime() != null)
+        contentValues.put(Columns.TIME_COL_5, model.getDate() + " " +model.getTime());
+        else if (model.getDate() != null && model.getTime() == null)
+            contentValues.put(Columns.TIME_COL_5, model.getDate());
+        else if (model.getTime() != null && model.getDate() == null)
+            contentValues.put(Columns.TIME_COL_5, model.getTime());
+        else
+            contentValues.put(Columns.TIME_COL_5, "");
         contentValues.put(Columns.NOTIFICATION_COL_6, model.getNotification());
         return contentValues;
     }

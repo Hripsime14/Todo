@@ -2,6 +2,7 @@ package com.example.todoapp.Services;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.example.todoapp.Backend.ToDoHelper;
 import com.example.todoapp.Models.ToDoModel;
@@ -57,6 +58,7 @@ public class ToDoService {
         toDoHelper = new ToDoHelper(context);
         Cursor cursor = toDoHelper.getAllData();
         modelList = new ArrayList<>();
+        String temp = null;
         if (cursor != null && cursor.getCount() > 0) {
             int i = 0;
             if (cursor.moveToFirst()) {
@@ -67,7 +69,17 @@ public class ToDoService {
                     model.setType(cursor.getInt(i++));
                     model.setTitle(cursor.getString(i++));
                     model.setPlace(cursor.getString(i++));
-                    model.setTime(cursor.getString(i++));
+                    temp = cursor.getString(i++);
+                    if (temp.length() > 0) {
+                        if (temp.contains("/") && temp.contains(":")) {
+                            model.setDate(temp.substring(0, 10));
+                            model.setTime(temp.substring(10));
+                        } else if (temp.contains(":")) {
+                            model.setTime(temp);
+                        } else if (temp.contains("/")) {
+                            model.setDate(temp);
+                        }
+                    }
                     model.setNotification(cursor.getString(i));
                     modelList.add(model);
                     i = 0;
