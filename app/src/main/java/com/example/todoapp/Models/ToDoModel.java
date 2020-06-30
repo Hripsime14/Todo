@@ -5,9 +5,8 @@ public class ToDoModel {
     private int type;
     private String title;
     private String place;
-    private String date;
-    private String time;
     private String notification;
+    private long timeStamp;
 
     public long getID() {
         return ID;
@@ -41,22 +40,6 @@ public class ToDoModel {
         this.place = place;
     }
 
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
     public String getNotification() {
         return notification;
     }
@@ -65,13 +48,20 @@ public class ToDoModel {
         this.notification = notification;
     }
 
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
     @Override
     public String toString() {
         return "ToDoModel{" +
                 "type='" + type + '\'' +
                 ", title='" + title + '\'' +
                 ", place='" + place + '\'' +
-                ", time='" + time + '\'' +
                 ", notification='" + notification + '\'' +
                 '}';
     }

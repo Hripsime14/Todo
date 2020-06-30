@@ -148,6 +148,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
         } catch (IOException e) {
+            Log.d("logmap", "onBackPressed: e = " + e);
             e.printStackTrace();
         }
         super.onBackPressed();

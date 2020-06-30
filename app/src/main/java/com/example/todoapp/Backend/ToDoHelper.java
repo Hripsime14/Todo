@@ -1,12 +1,18 @@
 package com.example.todoapp.Backend;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.example.todoapp.Models.ToDoModel;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ToDoHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
@@ -22,7 +28,7 @@ public class ToDoHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE table " + TABLE_NAME + " (" + Columns.ID_COL_1 +
                 " INTEGER PRIMARY KEY AUTOINCREMENT," + Columns.TYPE_COL_2 + " INTEGER," + Columns.TITLE_COL_3 + " TEXT," +
-                Columns.PLACE_COL_4 + " TEXT," + Columns.TIME_COL_5 + " TEXT," + Columns.NOTIFICATION_COL_6 + " TEXT)");
+                Columns.PLACE_COL_4 + " TEXT," + Columns.TIMESTAMP_COL_5 + " INTEGER," + Columns.NOTIFICATION_COL_6 + " TEXT)");
     }
 
     @Override
@@ -33,7 +39,8 @@ public class ToDoHelper extends SQLiteOpenHelper {
 
     public long insertData(ToDoModel model) {
         db = this.getWritableDatabase();
-        return db.insert(TABLE_NAME, null, tempMethod(model, null));
+        long temp = db.insert(TABLE_NAME, null, tempMethod(model, null));
+        return temp;
     }
 
     public Cursor getAllData() {
@@ -60,17 +67,7 @@ public class ToDoHelper extends SQLiteOpenHelper {
         contentValues.put(Columns.TYPE_COL_2, model.getType());
         contentValues.put(Columns.TITLE_COL_3, model.getTitle());
         contentValues.put(Columns.PLACE_COL_4, model.getPlace());
-        //TODO: shat em tuftel stex?
-//        if (model.getDate().equals("")) model.setDate(null);
-//        if (model.getTime().equals("")) model.setTime(null);
-        if (model.getDate() != null && model.getTime() != null)
-        contentValues.put(Columns.TIME_COL_5, model.getDate() + " " +model.getTime());
-        else if (model.getDate() != null && model.getTime() == null)
-            contentValues.put(Columns.TIME_COL_5, model.getDate());
-        else if (model.getTime() != null && model.getDate() == null)
-            contentValues.put(Columns.TIME_COL_5, model.getTime());
-        else
-            contentValues.put(Columns.TIME_COL_5, "");
+        contentValues.put(Columns.TIMESTAMP_COL_5, model.getTimeStamp());
         contentValues.put(Columns.NOTIFICATION_COL_6, model.getNotification());
         return contentValues;
     }
@@ -80,7 +77,7 @@ public class ToDoHelper extends SQLiteOpenHelper {
         public static final String TYPE_COL_2 = "TYPE";
         public static final String TITLE_COL_3 = "TITLE";
         public static final String PLACE_COL_4 = "PLACE";
-        public static final String TIME_COL_5 = "TIME";
+        public static final String TIMESTAMP_COL_5 = "TIME";
         public static final String NOTIFICATION_COL_6 = "NOTIFICATION";
     }
 }

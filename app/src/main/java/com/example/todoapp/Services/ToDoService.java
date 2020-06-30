@@ -7,7 +7,10 @@ import android.util.Log;
 import com.example.todoapp.Backend.ToDoHelper;
 import com.example.todoapp.Models.ToDoModel;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ToDoService {
@@ -58,7 +61,6 @@ public class ToDoService {
         toDoHelper = new ToDoHelper(context);
         Cursor cursor = toDoHelper.getAllData();
         modelList = new ArrayList<>();
-        String temp = null;
         if (cursor != null && cursor.getCount() > 0) {
             int i = 0;
             if (cursor.moveToFirst()) {
@@ -69,17 +71,8 @@ public class ToDoService {
                     model.setType(cursor.getInt(i++));
                     model.setTitle(cursor.getString(i++));
                     model.setPlace(cursor.getString(i++));
-                    temp = cursor.getString(i++);
-                    if (temp.length() > 0) {
-                        if (temp.contains("/") && temp.contains(":")) {
-                            model.setDate(temp.substring(0, 10));
-                            model.setTime(temp.substring(10));
-                        } else if (temp.contains(":")) {
-                            model.setTime(temp);
-                        } else if (temp.contains("/")) {
-                            model.setDate(temp);
-                        }
-                    }
+                    model.setTimeStamp(cursor.getLong(i++));
+                    Log.d("lognotification", "getList: notification = " + cursor.getString(i));
                     model.setNotification(cursor.getString(i));
                     modelList.add(model);
                     i = 0;

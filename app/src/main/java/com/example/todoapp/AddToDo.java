@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -22,7 +23,10 @@ import android.widget.TimePicker;
 import com.example.todoapp.Models.ToDoModel;
 import com.example.todoapp.Services.ToDoService;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class AddToDo extends AppCompatActivity {
     //TODO: erb vor texty erkara linum, textView chi erkarum
@@ -34,6 +38,8 @@ public class AddToDo extends AppCompatActivity {
     private Intent intent;
     private static final int MAP_REQUEST_CODE = 1;
     private EditText placeEditField;
+    private EditText dateEditField;
+    private EditText timeEditField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +93,7 @@ public class AddToDo extends AppCompatActivity {
         });
         placeEditField.addTextChangedListener(new ToDoTextWatcher(placeEditField));
 
-        final EditText dateEditField = findViewById(R.id.date_edit_id);
+        dateEditField = findViewById(R.id.date_edit_id);
         dateEditField.setShowSoftInputOnFocus(false);
         dateEditField.setCursorVisible(false);
         dateEditField.setOnClickListener(new View.OnClickListener() {
@@ -120,12 +126,10 @@ public class AddToDo extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dateEditField.setText("");
-                model.setDate(null);
             }
         });
 
-
-        final EditText timeEditField = findViewById(R.id.time_edit_id);
+        timeEditField = findViewById(R.id.time_edit_id);
         timeEditField.setShowSoftInputOnFocus(false);
         timeEditField.setCursorVisible(false);
         timeEditField.setOnClickListener(new View.OnClickListener() {
@@ -154,7 +158,6 @@ public class AddToDo extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 timeEditField.setText("");
-                model.setTime(null);
             }
         });
 
@@ -173,8 +176,8 @@ public class AddToDo extends AppCompatActivity {
             spinner.setSelection(model.getType());
             titleEditField.setText(model.getTitle());
             placeEditField.setText(model.getPlace());
-            dateEditField.setText(model.getDate());
-            timeEditField.setText(model.getTime());
+            dateEditField.setText(getDate(model.getTimeStamp()));
+            timeEditField.setText(getTime(model.getTimeStamp()));
             notificEditField.setText(model.getNotification());
         }
 
@@ -182,7 +185,8 @@ public class AddToDo extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                model.setType(spinner.getSelectedItemPosition());
+                saveType();
+                saveDateTime();
                 if (id > -1) {
                     if (service.updateToDoDB(id, model)) {
                         intent.putExtra("result", "done");
@@ -200,18 +204,51 @@ public class AddToDo extends AppCompatActivity {
                 finish();
             }
         });
-
     }
 
+    private String getDate(long timestamp) {
+        Date date = new Date(timestamp);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        return sdf.format(date);
+    }
 
+    private String getTime(long timestamp) {
+        Date date = new Date(timestamp);
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        return sdf.format(date);
+    }
+
+    private void saveDateTime() {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+            String date0 = dateEditField.getText() + "";
+            String [] dates = date0.split("/");
+            String selectedDay = dates[0];
+            String selectedMonth = dates[1];
+            String selectedYear = dates[2];
+            String [] times = (timeEditField.getText() + "").split(":");
+            String selectedHour = times[0];
+            String selectedMin = times[1];
+
+            Date date = sdf.parse(selectedDay + "/" + selectedMonth + "/" + selectedYear
+                    + " " + selectedHour + ":" + selectedMin + ":00");
+            model.setTimeStamp(date.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void saveType() {
+        model.setType(spinner.getSelectedItemPosition());
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         String extra = "name";
         if (requestCode == MAP_REQUEST_CODE && data != null && data.hasExtra(extra)) {
+            Log.d("logmap", "onActivityResult: I'm here");
             placeEditField.setText(data.getStringExtra(extra));
-//            model.setPlace(placeEditField.getText().toString());
         }
     }
 
@@ -241,9 +278,9 @@ public class AddToDo extends AppCompatActivity {
                 case R.id.place_edit_id:
                     model.setPlace(text); break;
                 case R.id.date_edit_id:
-                    model.setDate(text); break;
+                    Log.d("logDateCase", "afterTextChanged: it's the date case"); break;
                 case R.id.time_edit_id:
-                    model.setTime(text); break;
+                    Log.d("logTimeCase", "afterTextChanged: it's the time case"); break;
                 case R.id.notification_edit_id:
                     model.setNotification(text); break;
             }

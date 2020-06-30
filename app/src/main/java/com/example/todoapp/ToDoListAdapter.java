@@ -13,6 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.todoapp.Models.ToDoModel;
 import com.example.todoapp.Services.ToDoService;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyViewHolder> {
@@ -54,13 +57,7 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
         if (model.getType() == ToDoTypeAccess.BUSINESS_TYPE) holder.type.setText(R.string.business);
         else holder.type.setText(R.string.personal);
         holder.place.setText(model.getPlace());
-        if (model.getDate() != null && model.getTime() != null)
-            holder.date_and_time.setText(model.getDate() + " " + model.getTime());
-        else if (model.getDate() == null && model.getTime() != null)
-            holder.date_and_time.setText(model.getTime());
-        else if (model.getTime() == null && model.getDate() != null)
-            holder.date_and_time.setText(model.getDate());
-        else holder.date_and_time.setText("");
+        holder.date_and_time.setText(getDateTime2(model.getTimeStamp()));
         holder.id = model.getID();
         holder.removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +75,20 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
                 }
             }
         });
+    }
+
+    public String getDateTime(long timestamp) { //not keeping format
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(timestamp);
+        int month = cal.get(Calendar.MONTH) + 1;
+        return cal.get(Calendar.DAY_OF_MONTH) + "/" + month + "/" + cal.get(Calendar.YEAR) + " " +
+                cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE);
+    }
+
+    public String getDateTime2 (long timestamp) {
+        Date date = new Date(timestamp);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        return sdf.format(date);
     }
 
     @Override
