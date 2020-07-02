@@ -39,6 +39,7 @@ public class AddToDo extends AppCompatActivity {
     private Spinner spinner;
     private Intent intent;
     private static final int MAP_REQUEST_CODE = 1;
+    private EditText titleEditField;
     private EditText placeEditField;
     private EditText dateEditField;
     private EditText timeEditField;
@@ -86,7 +87,7 @@ public class AddToDo extends AppCompatActivity {
             }
         });
 
-        EditText titleEditField = findViewById(R.id.title_edit_id);
+        titleEditField = findViewById(R.id.title_edit_id);
         titleEditField.addTextChangedListener(new ToDoTextWatcher(titleEditField));
 
         placeEditField = findViewById(R.id.place_edit_id);
@@ -227,22 +228,28 @@ public class AddToDo extends AppCompatActivity {
     }
 
     private boolean coverEmptyCases() {
+        int titleTextLength = titleEditField.getText().length();
         int dateTextLength = dateEditField.getText().length();
         int timeTextLength = timeEditField.getText().length();
+        if (titleTextLength == 0) {
+            saveButton.setEnabled(false);
+            titleEditField.setError("Title is required");
+            titleEditField.requestFocus();
+        }
         if (dateTextLength == 0) {
-            saveButton.setClickable(false);
+            saveButton.setEnabled(false);
             dateEditField.setError("Date is required");
             dateEditField.requestFocus();
             dateDeleteButton.setVisibility(View.GONE);
         }
         if (timeTextLength == 0) {
-            saveButton.setClickable(false);
+            saveButton.setEnabled(false);
             timeEditField.setError("Time is required");
             timeEditField.requestFocus();
             timeDeleteButton.setVisibility(View.GONE);
         }
-        if (dateTextLength > 0 && timeTextLength > 0) {
-            saveButton.setClickable(true);
+        if (titleTextLength > 0 && dateTextLength > 0 && timeTextLength > 0) {
+            saveButton.setEnabled(true);
             return true;
         }
         return false;
@@ -316,12 +323,13 @@ public class AddToDo extends AppCompatActivity {
             String text = s.toString();
             switch (view.getId()) {
                 case R.id.title_edit_id:
-                    model.setTitle(text); break;
+                    model.setTitle(text);
+                    saveButton.setEnabled(true); break;
                 case R.id.place_edit_id:
                     model.setPlace(text); break;
                 case R.id.date_edit_id:
                 case R.id.time_edit_id:
-                    saveButton.setClickable(true); break;
+                    saveButton.setEnabled(true); break;
                 case R.id.notification_edit_id:
                     model.setNotification(text); break;
             }

@@ -56,7 +56,7 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
         final ToDoModel model = list.get(position);
         if (model.getType() == ToDoTypeAccess.BUSINESS_TYPE) holder.type.setText(R.string.business);
         else holder.type.setText(R.string.personal);
-        holder.place.setText(model.getPlace());
+        holder.title.setText(model.getTitle());
         holder.date_and_time.setText(getDateTime2(model.getTimeStamp()));
         holder.id = model.getID();
         holder.removeButton.setOnClickListener(new View.OnClickListener() {
@@ -100,7 +100,7 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
 
     //TODO: haskanal te vor depqum MyViewHolder@ piti liner static
     static class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView type, date_and_time, place;
+        TextView type, date_and_time, title;
         ImageView icon;
         long id;  //TODO: vor id field unem stex, ed ok a?
         private Button removeButton;
@@ -108,7 +108,7 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             type = itemView.findViewById(R.id.todo_type_id);
-            place = itemView.findViewById(R.id.todo_place_id);
+            title = itemView.findViewById(R.id.todo_title_id);
             date_and_time = itemView.findViewById(R.id.todo_time_id);
             icon = itemView.findViewById(R.id.todo_icon_id);
             removeButton = itemView.findViewById(R.id.remove_button_id);
