@@ -25,4 +25,6 @@
         <item>Personal</item>
     </string-array>
     <string name="title_activity_maps">Maps</string>
+    <string name="channel_name">TODO reminder</string>
+    <string name="channel_description">This is for reminding you for your TODOs</string>
 </resources>

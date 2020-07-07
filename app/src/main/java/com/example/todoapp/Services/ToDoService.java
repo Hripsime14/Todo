@@ -72,7 +72,6 @@ public class ToDoService {
                     model.setTitle(cursor.getString(i++));
                     model.setPlace(cursor.getString(i++));
                     model.setTimeStamp(cursor.getLong(i++));
-                    Log.d("lognotification", "getList: notification = " + cursor.getString(i));
                     model.setNotification(cursor.getString(i));
                     modelList.add(model);
                     i = 0;
