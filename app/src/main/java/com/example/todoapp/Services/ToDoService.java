@@ -78,9 +78,7 @@ public class ToDoService {
     }
 
     public List<ToDoModel> getSortedList() {
-        List<ToDoModel> sortedList;
-        if (modelList != null) sortedList = modelList;
-        else sortedList = getList();
+        List<ToDoModel> sortedList = getList();
         Collections.sort(sortedList, new SortByTime());
         return sortedList;
     }

@@ -65,9 +65,10 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
         holder.removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                notifyItemRemoved(position);
-                if (toDoService.removeToDoDB(model.getID()))
-                list = toDoService.getSortedList();
+                if (toDoService.removeToDoDB(model.getID())) {
+                    list = toDoService.getSortedList();
+                    notifyItemRemoved(position);
+                }
             }
         });
 
