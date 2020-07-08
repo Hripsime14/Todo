@@ -2,15 +2,11 @@ package com.example.todoapp.Services;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
-
 import com.example.todoapp.Backend.ToDoHelper;
 import com.example.todoapp.Models.ToDoModel;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ToDoService {
@@ -80,4 +76,21 @@ public class ToDoService {
         }
         return modelList;
     }
+
+    public List<ToDoModel> getSortedList() {
+        List<ToDoModel> sortedList;
+        if (modelList != null) sortedList = modelList;
+        else sortedList = getList();
+        Collections.sort(sortedList, new SortByTime());
+        return sortedList;
+    }
+
+    private class SortByTime implements Comparator<ToDoModel> {
+
+        @Override
+        public int compare(ToDoModel model1, ToDoModel model2) {
+            return (int)(model1.getTimeStamp()/1000 - model2.getTimeStamp()/1000);
+        }
+    }
 }
+

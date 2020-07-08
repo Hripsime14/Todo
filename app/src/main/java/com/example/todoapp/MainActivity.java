@@ -37,35 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private String CHANNEL_ID = "CHANNEL_ID";
 
 
-    public void sendNotification (View view) {
-        Intent intent = new Intent(MainActivity.this, ReminderBroadcast.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 55,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        long timeAtButtonClick = System.currentTimeMillis();
-        long tenSecondsInMillis = 10 * 1000;
-        Log.d("logalarm", "sendNotification: I'm here");
-
-        alarmManager.set(AlarmManager.RTC_WAKEUP, timeAtButtonClick + tenSecondsInMillis, pendingIntent);
-    }
-
-//Ars es pahy ignore ara
-/*  public void startService(View v) {
-        String input = "INPUT";
-        Intent serviceIntent = new Intent(this, NotificationService.class);
-
-        serviceIntent.putExtra("inputExtra", input);
-
-        startService(serviceIntent);
-    }
-
-    public void stopService(View v) {
-        Intent serviceIntent = new Intent(this, NotificationService.class);
-        stopService(serviceIntent);
-    }*/
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView list = findViewById(R.id.todo_list_id);
         list.setLayoutManager(new LinearLayoutManager(this));
         //TODO:jshtel te stex arajin argument-@ pass by reference a?, vor krknaki a arajin TODO-n nkarum?
-        adapter = new ToDoListAdapter(toDoService.getList(), toDoService,  new ToDoListAdapter.RecyclerViewClickListener() {
+        adapter = new ToDoListAdapter(toDoService.getSortedList(), toDoService,  new ToDoListAdapter.RecyclerViewClickListener() {
             @Override
             public void recyclerViewListClicked(View v, int position, long id) {
                 pos = position;
@@ -105,6 +76,35 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void sendNotification (View view) {
+        Intent intent = new Intent(MainActivity.this, ReminderBroadcast.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 55,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        long timeAtButtonClick = System.currentTimeMillis();
+        long tenSecondsInMillis = 10 * 1000;
+        Log.d("logalarm", "sendNotification: I'm here");
+
+        alarmManager.set(AlarmManager.RTC_WAKEUP, timeAtButtonClick + tenSecondsInMillis, pendingIntent);
+    }
+
+//please ignore these
+/*  public void startService(View v) {
+        String input = "INPUT";
+        Intent serviceIntent = new Intent(this, NotificationService.class);
+
+        serviceIntent.putExtra("inputExtra", input);
+
+        startService(serviceIntent);
+    }
+
+    public void stopService(View v) {
+        Intent serviceIntent = new Intent(this, NotificationService.class);
+        stopService(serviceIntent);
+    }*/
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

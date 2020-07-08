@@ -14,7 +14,6 @@ import com.example.todoapp.Models.ToDoModel;
 import com.example.todoapp.Services.ToDoService;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -35,11 +34,15 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
 
 
     public void addItem() {
-        if (list.add(toDoService.getList().get(toDoService.getList().size() -1))) notifyItemInserted(list.size() - 1);
+        if (list.add(toDoService.getList().get(toDoService.getList().size() -1))) //notifyItemInserted(list.size() - 1);
+        list = toDoService.getSortedList();
+        notifyDataSetChanged();
     }
 
     public void editItem(int pos) {
-        if (list.set(pos, toDoService.getList().get(pos)) != null) notifyItemChanged(pos); //TODO: tuftel em?
+        if (list.set(pos, toDoService.getList().get(pos)) != null)// notifyItemChanged(pos); //TODO: tuftel em?
+        list = toDoService.getSortedList();
+        notifyDataSetChanged();
     }
 
 
@@ -57,13 +60,14 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
         if (model.getType() == ToDoTypeAccess.BUSINESS_TYPE) holder.type.setText(R.string.business);
         else holder.type.setText(R.string.personal);
         holder.title.setText(model.getTitle());
-        holder.date_and_time.setText(getDateTime2(model.getTimeStamp()));
+        holder.date_and_time.setText(getDateTime(model.getTimeStamp()));
         holder.id = model.getID();
         holder.removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (toDoService.removeToDoDB(model.getID())) notifyItemRemoved(position);
-                list = toDoService.getList();
+                notifyItemRemoved(position);
+                if (toDoService.removeToDoDB(model.getID()))
+                list = toDoService.getSortedList();
             }
         });
 
@@ -77,15 +81,7 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
         });
     }
 
-    public String getDateTime(long timestamp) { //not keeping format
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(timestamp);
-        int month = cal.get(Calendar.MONTH) + 1;
-        return cal.get(Calendar.DAY_OF_MONTH) + "/" + month + "/" + cal.get(Calendar.YEAR) + " " +
-                cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE);
-    }
-
-    public String getDateTime2 (long timestamp) {
+    public String getDateTime (long timestamp) {
         Date date = new Date(timestamp);
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         return sdf.format(date);
