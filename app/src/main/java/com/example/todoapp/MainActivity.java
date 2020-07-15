@@ -6,14 +6,8 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.AlarmManager;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -33,27 +27,23 @@ public class MainActivity extends AppCompatActivity {
     private TextView workDonePercent;
     private ToDoService toDoService = ToDoService.getInstance();
     private int pos;
-//    private int NOTIFICATION_ID = 77;
-    private String CHANNEL_ID = "CHANNEL_ID";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        createNotificationChannel();
-
         new ToDoHelper(this);
         toDoService.setContext(getApplicationContext());
         personalTodoNumber = findViewById(R.id.personal_value_text_id);
         businessTodoNumber = findViewById(R.id.business_value_text_id);
         workDonePercent = findViewById(R.id.work_done_id);
+        updatePBValues();
 
         RecyclerView list = findViewById(R.id.todo_list_id);
         list.setLayoutManager(new LinearLayoutManager(this));
         //TODO:jshtel te stex arajin argument-@ pass by reference a?, vor krknaki a arajin TODO-n nkarum?
-        adapter = new ToDoListAdapter(toDoService.getSortedList(), toDoService,  new ToDoListAdapter.RecyclerViewClickListener() {
+        adapter = new ToDoListAdapter(toDoService.getSortedList(), toDoService, this, list,  new ToDoListAdapter.RecyclerViewClickListener() {
             @Override
             public void recyclerViewListClicked(View v, int position, long id) {
                 pos = position;
@@ -77,52 +67,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void sendNotification (View view) {
-        Intent intent = new Intent(MainActivity.this, ReminderBroadcast.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 55,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        long timeAtButtonClick = System.currentTimeMillis();
-        long tenSecondsInMillis = 10 * 1000;
-        Log.d("logalarm", "sendNotification: I'm here");
-
-        alarmManager.set(AlarmManager.RTC_WAKEUP, timeAtButtonClick + tenSecondsInMillis, pendingIntent);
-    }
-
-//please ignore these
-/*  public void startService(View v) {
-        String input = "INPUT";
-        Intent serviceIntent = new Intent(this, NotificationService.class);
-
-        serviceIntent.putExtra("inputExtra", input);
-
-        startService(serviceIntent);
-    }
-
-    public void stopService(View v) {
-        Intent serviceIntent = new Intent(this, NotificationService.class);
-        stopService(serviceIntent);
-    }*/
-
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = getString(R.string.channel_name);
-            String description = getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         String extra = "result";
+        if (data == null) return;
+        else updatePBValues();
         if (requestCode == ADD_TODO_REQUEST_CODE && data != null && data.hasExtra(extra)
                 && Objects.equals(data.getStringExtra(extra), "done")) {
             adapter.addItem();
@@ -130,5 +81,11 @@ public class MainActivity extends AppCompatActivity {
                 && Objects.equals(data.getStringExtra(extra), "done")) {
             adapter.editItem(pos);
         }
+    }
+
+
+    private void updatePBValues() {
+        personalTodoNumber.setText(toDoService.getPersTODO());
+        businessTodoNumber.setText(toDoService.getBusTODO());
     }
 }

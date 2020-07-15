@@ -1,21 +1,16 @@
 package com.example.todoapp.Backend;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.example.todoapp.Models.ToDoModel;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class ToDoHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "ToDo.db";
     public static final String TABLE_NAME = "todo_table";
     private SQLiteDatabase db;
@@ -32,9 +27,12 @@ public class ToDoHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP table IF EXISTS " + TABLE_NAME);
-        onCreate(db);
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {//TODO:es method-@ usumnasirel
+        if (newVersion > oldVersion) {
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + Columns.DONE_COL_7 + " INTEGER DEFAULT 0");
+        }
+//        db.execSQL("DROP table IF EXISTS " + TABLE_NAME);
+//        onCreate(db);
     }
 
     public long insertData(ToDoModel model) {
@@ -69,8 +67,11 @@ public class ToDoHelper extends SQLiteOpenHelper {
         contentValues.put(Columns.PLACE_COL_4, model.getPlace());
         contentValues.put(Columns.TIMESTAMP_COL_5, model.getTimeStamp());
         contentValues.put(Columns.NOTIFICATION_COL_6, model.getNotification());
+        contentValues.put(Columns.DONE_COL_7, model.isDone());
         return contentValues;
     }
+
+
 
     private static class Columns {
         public static final String ID_COL_1 = "ID";
@@ -79,5 +80,6 @@ public class ToDoHelper extends SQLiteOpenHelper {
         public static final String PLACE_COL_4 = "PLACE";
         public static final String TIMESTAMP_COL_5 = "TIME";
         public static final String NOTIFICATION_COL_6 = "NOTIFICATION";
+        public static final String DONE_COL_7 = "DONE";
     }
 }

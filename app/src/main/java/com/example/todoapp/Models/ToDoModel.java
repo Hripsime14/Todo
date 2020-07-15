@@ -7,6 +7,7 @@ public class ToDoModel {
     private String place;
     private String notification;
     private long timeStamp;
+    private boolean isDone;
 
     public long getID() {
         return ID;
@@ -54,6 +55,14 @@ public class ToDoModel {
 
     public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
+    }
+
+    public boolean isDone() {
+        return isDone;
+    }
+
+    public void setDone(boolean done) {
+        isDone = done;
     }
 
     @Override

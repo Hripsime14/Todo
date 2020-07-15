@@ -110,6 +110,10 @@ public class AddToDo extends AppCompatActivity {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     Log.d("logtouch", "onTouch: here");
                     final Calendar calendar = Calendar.getInstance();
+                    if (model.getTimeStamp() != 0) {
+                        Date date = new Date(model.getTimeStamp());
+                        calendar.setTime(date);
+                    }
                     int day = calendar.get(Calendar.DAY_OF_MONTH);
                     int month = calendar.get(Calendar.MONTH);
                     int year = calendar.get(Calendar.YEAR);
@@ -150,6 +154,13 @@ public class AddToDo extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    Calendar calendar = Calendar.getInstance();
+                    if (model.getTimeStamp() != 0) {
+                        Date date = new Date(model.getTimeStamp());
+                        calendar.setTime(date);
+                    }
+                    int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                    int min = calendar.get(Calendar.MINUTE);
                     TimePickerDialog timePickerDialog = new TimePickerDialog(AddToDo.this, R.style.DialogTheme,
                             new TimePickerDialog.OnTimeSetListener() {
                                 @Override
@@ -164,7 +175,7 @@ public class AddToDo extends AppCompatActivity {
                                     else min = minute + "";
                                     timeEditField.setText(hour + ":" + min);
                                 }
-                            }, 0, 0, true);
+                            }, hour, min, true);
                     timePickerDialog.show();
                 }
                 return false;

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 import com.example.todoapp.Backend.ToDoHelper;
 import com.example.todoapp.Models.ToDoModel;
+import com.example.todoapp.ToDoTypeAccess;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -15,6 +17,7 @@ public class ToDoService {
     private static ToDoService instance;
     //TODO: haskanal te vonc pass anel contexty, erb unenq singleton, u kara memory leak arajacni
     private ToDoHelper toDoHelper;
+    private int persTODO, busTODO = 0;
 
     public static ToDoService getInstance() {
         if (instance == null) {
@@ -68,7 +71,9 @@ public class ToDoService {
                     model.setTitle(cursor.getString(i++));
                     model.setPlace(cursor.getString(i++));
                     model.setTimeStamp(cursor.getLong(i++));
-                    model.setNotification(cursor.getString(i));
+                    model.setNotification(cursor.getString(i++));
+                    if (cursor.getInt(i) == 1)
+                    model.setDone(true); else model.setDone(false);
                     modelList.add(model);
                     i = 0;
                 }
@@ -81,6 +86,24 @@ public class ToDoService {
         List<ToDoModel> sortedList = getList();
         Collections.sort(sortedList, new SortByTime());
         return sortedList;
+    }
+
+    private void countPB() {
+        busTODO = 0; persTODO = 0;
+        for (ToDoModel model : getList()) {
+            if (model.getType() == ToDoTypeAccess. BUSINESS_TYPE) busTODO++;
+            else persTODO ++;
+        }
+    }
+
+    public String getPersTODO() {
+        countPB();
+        return persTODO + "";
+    }
+
+    public String getBusTODO() {
+        countPB();
+        return busTODO + "";
     }
 
     private class SortByTime implements Comparator<ToDoModel> {
