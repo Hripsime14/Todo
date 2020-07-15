@@ -1,4 +1,4 @@
-package com.example.todoapp;
+package com.example.todoapp.Activities;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +23,7 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 
 import com.example.todoapp.Models.ToDoModel;
+import com.example.todoapp.R;
 import com.example.todoapp.Services.ToDoService;
 
 import java.text.ParseException;
@@ -30,7 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class AddToDo extends AppCompatActivity {
+public class AddToDoActivity extends AppCompatActivity {
     //TODO: erb vor texty erkara linum, textView chi erkarum
     public static String ID = "ID";
     private long id = -1;
@@ -117,7 +118,7 @@ public class AddToDo extends AppCompatActivity {
                     int day = calendar.get(Calendar.DAY_OF_MONTH);
                     int month = calendar.get(Calendar.MONTH);
                     int year = calendar.get(Calendar.YEAR);
-                    DatePickerDialog picker = new DatePickerDialog(AddToDo.this, R.style.DialogTheme,
+                    DatePickerDialog picker = new DatePickerDialog(AddToDoActivity.this, R.style.DialogTheme,
                             new DatePickerDialog.OnDateSetListener() {
                                 @Override
                                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -161,7 +162,7 @@ public class AddToDo extends AppCompatActivity {
                     }
                     int hour = calendar.get(Calendar.HOUR_OF_DAY);
                     int min = calendar.get(Calendar.MINUTE);
-                    TimePickerDialog timePickerDialog = new TimePickerDialog(AddToDo.this, R.style.DialogTheme,
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(AddToDoActivity.this, R.style.DialogTheme,
                             new TimePickerDialog.OnTimeSetListener() {
                                 @Override
                                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {

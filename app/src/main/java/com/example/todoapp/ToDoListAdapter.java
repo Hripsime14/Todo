@@ -26,6 +26,7 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
     private List<ToDoModel> list;
     ToDoService toDoService;
     private RecyclerViewClickListener listener;
+    private WorkDoneListener workDoneListener;
     private Context context;
     private final SparseBooleanArray array = new SparseBooleanArray();
 
@@ -33,7 +34,18 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
         void recyclerViewListClicked(View v, int position, long id);
     }
 
-    ToDoListAdapter(List<ToDoModel> list, ToDoService service, Context context, RecyclerView recyclerView, RecyclerViewClickListener listener) {
+    public interface WorkDoneListener {
+        void onDoneWorkChanged();
+        void onItemRemoved();
+    }
+
+    public void setWorkDoneListener(WorkDoneListener listener) {
+        this.workDoneListener = listener;
+    }
+
+
+
+    public ToDoListAdapter(List<ToDoModel> list, ToDoService service, Context context, RecyclerView recyclerView, RecyclerViewClickListener listener) {
         this.list = list;
         this.toDoService = service;
         this.context = context;
@@ -81,6 +93,9 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
             public void onClick(View v) {
                 if (toDoService.removeToDoDB(model.getID())) {
                     list = toDoService.getSortedList();
+                    if (workDoneListener != null) {
+                        workDoneListener.onItemRemoved();
+                    }
                     notifyItemRemoved(position);
                 }
             }
@@ -165,6 +180,9 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
             if (toDoService.updateToDoDB(model.getID(), model)) {
                 list.set(position, model);
                 setItemColor(viewHolder, model.isDone());
+            }
+            if (workDoneListener != null) {
+                workDoneListener.onDoneWorkChanged();
             }
             notifyDataSetChanged();
         }

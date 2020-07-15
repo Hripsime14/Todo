@@ -1,4 +1,4 @@
-package com.example.todoapp;
+package com.example.todoapp.Activities;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +12,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.todoapp.Backend.ToDoHelper;
+import com.example.todoapp.R;
 import com.example.todoapp.Services.ToDoService;
+import com.example.todoapp.ToDoListAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Objects;
@@ -38,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
         personalTodoNumber = findViewById(R.id.personal_value_text_id);
         businessTodoNumber = findViewById(R.id.business_value_text_id);
         workDonePercent = findViewById(R.id.work_done_id);
-        updatePBValues();
+        updatePBValues(); //TODO: durs chi galis vor es method-nery esqan shat texic em kanchum, karox a mi ban en chi?
+        updateDoneWork();
 
         RecyclerView list = findViewById(R.id.todo_list_id);
         list.setLayoutManager(new LinearLayoutManager(this));
@@ -47,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void recyclerViewListClicked(View v, int position, long id) {
                 pos = position;
-                Intent intent = new Intent(getApplicationContext(), AddToDo.class);
-                intent.putExtra(AddToDo.ID, id);
+                Intent intent = new Intent(getApplicationContext(), AddToDoActivity.class);
+                intent.putExtra(AddToDoActivity.ID, id);
                 startActivityForResult(intent, EDIT_TODO_REQUEST_CODE);
             }
         });
@@ -56,15 +59,37 @@ public class MainActivity extends AppCompatActivity {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(list.getContext(), DividerItemDecoration.VERTICAL);
         list.addItemDecoration(dividerItemDecoration);
 
+        adapter.setWorkDoneListener(new ToDoListAdapter.WorkDoneListener() {
+            @Override
+            public void onDoneWorkChanged() {
+                updateDoneWork();
+            }
+
+            @Override
+            public void onItemRemoved() {
+                updatePBValues();
+                updateDoneWork();
+            }
+        });
+
 
         FloatingActionButton plusButton = findViewById(R.id.fab_id);
         plusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), AddToDo.class);
+                Intent intent = new Intent(getApplicationContext(), AddToDoActivity.class);
                 startActivityForResult(intent, ADD_TODO_REQUEST_CODE);
             }
         });
+    }
+
+    private void updatePBValues() {
+        personalTodoNumber.setText(toDoService.getPersTODO());
+        businessTodoNumber.setText(toDoService.getBusTODO());
+    }
+
+    private void updateDoneWork() {
+        workDonePercent.setText(toDoService.getDoneWork());
     }
 
 
@@ -73,7 +98,10 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         String extra = "result";
         if (data == null) return;
-        else updatePBValues();
+        else {
+            updatePBValues();
+            workDonePercent.setText(toDoService.getDoneWork());
+        }
         if (requestCode == ADD_TODO_REQUEST_CODE && data != null && data.hasExtra(extra)
                 && Objects.equals(data.getStringExtra(extra), "done")) {
             adapter.addItem();
@@ -81,11 +109,5 @@ public class MainActivity extends AppCompatActivity {
                 && Objects.equals(data.getStringExtra(extra), "done")) {
             adapter.editItem(pos);
         }
-    }
-
-
-    private void updatePBValues() {
-        personalTodoNumber.setText(toDoService.getPersTODO());
-        businessTodoNumber.setText(toDoService.getBusTODO());
     }
 }

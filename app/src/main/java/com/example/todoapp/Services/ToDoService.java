@@ -17,7 +17,7 @@ public class ToDoService {
     private static ToDoService instance;
     //TODO: haskanal te vonc pass anel contexty, erb unenq singleton, u kara memory leak arajacni
     private ToDoHelper toDoHelper;
-    private int persTODO, busTODO = 0;
+    private int persTODO = 0, busTODO = 0, doneWork = 0;
 
     public static ToDoService getInstance() {
         if (instance == null) {
@@ -94,6 +94,18 @@ public class ToDoService {
             if (model.getType() == ToDoTypeAccess. BUSINESS_TYPE) busTODO++;
             else persTODO ++;
         }
+    }
+
+    private int countDoneWork() {
+        doneWork = 0;
+        for (ToDoModel model : getList()) {
+            if (model.isDone()) doneWork ++;
+        }
+        return 100 * doneWork / getList().size();
+    }
+
+    public String getDoneWork() {
+        return countDoneWork() + "%";
     }
 
     public String getPersTODO() {

@@ -35,7 +35,7 @@
         -->
 
         <activity
-            android:name=".MapsActivity"
+            android:name=".Activities.MapsActivity"
             android:label="@string/title_activity_maps"></activity>
 
         <meta-data
@@ -43,10 +43,10 @@
             android:value="AIzaSyD_7RRjfrxc4KRG0yPwmg4-mo30Sj7tCEA" /> <!-- <activity android:name=".MapActivity"></activity> -->
 
         <activity
-            android:name=".AddToDo"
+            android:name=".Activities.AddToDoActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
