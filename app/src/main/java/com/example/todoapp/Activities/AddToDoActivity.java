@@ -4,14 +4,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -31,7 +30,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class AddToDoActivity extends AppCompatActivity {
+public class
+
+AddToDoActivity extends AppCompatActivity {
     //TODO: erb vor texty erkara linum, textView chi erkarum
     public static String ID = "ID";
     private long id = -1;
@@ -62,23 +63,14 @@ public class AddToDoActivity extends AppCompatActivity {
         ArrayAdapter spinnerAdapter = ArrayAdapter.createFromResource(
                 this,
                 R.array.todo_types,
-                R.layout.color_spinner_layout
+                R.layout.color_spinner_layout //this shows the spinner layout when it's closed
         );
-//        spinnerAdapter.setDropDownViewResource(R.layout.spinner_sIngle_row);
-//        TODO: haskanal te es toxy inchi a petq u hamapatasxan layout@
+        spinnerAdapter.setDropDownViewResource(R.layout.spinner_single_row);//and this, for the suggested items
 
         spinner = findViewById(R.id.type_spinner_id);
         spinner.setAdapter(spinnerAdapter);
 
-        ImageButton placeDeleteButton = findViewById(R.id.delete_place_button_id);
-        placeDeleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                placeEditField.setText("");
-                model.setPlace("");
-                //TODO: es iqsikic sax editTexteri mot dnel, u dranc onClick-i mej mi methodov pordzel anel
-            }
-        });
+
 
         ImageButton backButton = findViewById(R.id.back_button_id);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -97,10 +89,14 @@ public class AddToDoActivity extends AppCompatActivity {
         placeEditField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                placeEditField.setEnabled(false);
                 startActivityForResult(new Intent(getApplicationContext(), MapsActivity.class), MAP_REQUEST_CODE);
             }
         });
         placeEditField.addTextChangedListener(new ToDoTextWatcher(placeEditField));
+
+        ImageButton placeDeleteButton = findViewById(R.id.delete_place_button_id);
+        placeDeleteButton.setOnClickListener(new ToDoFieldDeleteOnClick(placeEditField));
 
         dateEditField = findViewById(R.id.date_edit_id);
         dateEditField.setShowSoftInputOnFocus(false);
@@ -109,7 +105,7 @@ public class AddToDoActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    Log.d("logtouch", "onTouch: here");
+                    dateEditField.setEnabled(false);
                     final Calendar calendar = Calendar.getInstance();
                     if (model.getTimeStamp() != 0) {
                         Date date = new Date(model.getTimeStamp());
@@ -118,7 +114,7 @@ public class AddToDoActivity extends AppCompatActivity {
                     int day = calendar.get(Calendar.DAY_OF_MONTH);
                     int month = calendar.get(Calendar.MONTH);
                     int year = calendar.get(Calendar.YEAR);
-                    DatePickerDialog picker = new DatePickerDialog(AddToDoActivity.this, R.style.DialogTheme,
+                    DatePickerDialog datePicker = new DatePickerDialog(AddToDoActivity.this, R.style.DialogTheme,
                             new DatePickerDialog.OnDateSetListener() {
                                 @Override
                                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -130,10 +126,19 @@ public class AddToDoActivity extends AppCompatActivity {
                                     else day = dayOfMonth + "";
                                     if (++monthOfYear < 10) month = "0" + monthOfYear;
                                     else month = monthOfYear + "";
-                                    dateEditField.setText(day + "/" + month + "/" + year);
+                                    String dateText = day + "/" + month + "/" + year;
+                                    dateEditField.setText(dateText);
+                                    dateEditField.setEnabled(true);
                                 }
                             }, year, month, day);
-                    picker.show();
+                    datePicker.show();
+
+                    datePicker.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            dateEditField.setEnabled(true);
+                        }
+                    });
                 }
                 return false;
             }
@@ -141,12 +146,7 @@ public class AddToDoActivity extends AppCompatActivity {
         dateEditField.addTextChangedListener(new ToDoTextWatcher(dateEditField));
 
         dateDeleteButton = findViewById(R.id.delete_date_button_id);
-        dateDeleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dateEditField.setText("");
-            }
-        });
+        dateDeleteButton.setOnClickListener(new ToDoFieldDeleteOnClick(dateEditField));
 
         timeEditField = findViewById(R.id.time_edit_id);
         timeEditField.setShowSoftInputOnFocus(false);
@@ -155,6 +155,7 @@ public class AddToDoActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    timeEditField.setEnabled(false);
                     Calendar calendar = Calendar.getInstance();
                     if (model.getTimeStamp() != 0) {
                         Date date = new Date(model.getTimeStamp());
@@ -162,7 +163,7 @@ public class AddToDoActivity extends AppCompatActivity {
                     }
                     int hour = calendar.get(Calendar.HOUR_OF_DAY);
                     int min = calendar.get(Calendar.MINUTE);
-                    TimePickerDialog timePickerDialog = new TimePickerDialog(AddToDoActivity.this, R.style.DialogTheme,
+                    TimePickerDialog timePicker = new TimePickerDialog(AddToDoActivity.this, R.style.DialogTheme,
                             new TimePickerDialog.OnTimeSetListener() {
                                 @Override
                                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -174,10 +175,20 @@ public class AddToDoActivity extends AppCompatActivity {
                                     else hour = hourOfDay + "";
                                     if (minute < 10) min = "0" + minute;
                                     else min = minute + "";
-                                    timeEditField.setText(hour + ":" + min);
+                                    String timeText = hour + ":" + min;
+                                    timeEditField.setText(timeText);
+                                    timeEditField.setEnabled(true);
                                 }
                             }, hour, min, true);
-                    timePickerDialog.show();
+                    timePicker.show();
+
+                    timePicker.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            timeEditField.setEnabled(true);
+                        }
+                    });
+
                 }
                 return false;
             }
@@ -185,13 +196,7 @@ public class AddToDoActivity extends AppCompatActivity {
         timeEditField.addTextChangedListener(new ToDoTextWatcher(timeEditField));
 
         timeDeleteButton = findViewById(R.id.delete_time_button_id);
-        timeDeleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                timeEditField.setText("");
-            }
-        });
-
+        timeDeleteButton.setOnClickListener(new ToDoFieldDeleteOnClick(timeEditField));
 
         EditText notificEditField = findViewById(R.id.notification_edit_id);
         notificEditField.addTextChangedListener(new ToDoTextWatcher(notificEditField));
@@ -221,14 +226,12 @@ public class AddToDoActivity extends AppCompatActivity {
                     saveDateTime();
                     if (id > -1) {
                         if (service.updateToDoDB(id, model)) {
-                            intent.putExtra("result", "done");
-                            setResult(Activity.RESULT_OK, intent);
+                            setResult(RESULT_OK, intent);
                         }
                     } else {
                         long addResult = service.addToDoDB(model);
                         if (addResult > 0) {
-                            intent.putExtra("result", "done");
-                            setResult(Activity.RESULT_OK, intent);
+                            setResult(RESULT_OK, intent);
                         }
                         model.setID(addResult);
                     }
@@ -293,7 +296,7 @@ public class AddToDoActivity extends AppCompatActivity {
 
             Date date = sdf.parse(selectedDay + "/" + selectedMonth + "/" + selectedYear
                     + " " + selectedHour + ":" + selectedMin + ":00");
-            model.setTimeStamp(date.getTime());
+            if (date != null) model.setTimeStamp(date.getTime());
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -306,13 +309,31 @@ public class AddToDoActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        String extra = "name";
+        String extra = MapsActivity.NAME_EXTRA;
         if (requestCode == MAP_REQUEST_CODE && data != null && data.hasExtra(extra)) {
-            Log.d("logmap", "onActivityResult: I'm here");
             placeEditField.setText(data.getStringExtra(extra));
         }
     }
 
+    private class ToDoFieldDeleteOnClick implements View.OnClickListener {
+        private View view;
+
+        private ToDoFieldDeleteOnClick(View view) {
+            this.view = view;
+        }
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.delete_place_button_id:
+                    placeEditField.setText(""); break;
+                case R.id.delete_date_button_id:
+                    dateEditField.setText(""); break;
+                case R.id.delete_time_button_id:
+                    timeEditField.setText(""); break;
+            }
+        }
+    }
     private class ToDoTextWatcher implements TextWatcher {
         private View view;
 
@@ -338,6 +359,7 @@ public class AddToDoActivity extends AppCompatActivity {
                     model.setTitle(text);
                     saveButton.setEnabled(true); break;
                 case R.id.place_edit_id:
+                    placeEditField.setEnabled(true);
                     model.setPlace(text); break;
                 case R.id.date_edit_id:
                 case R.id.time_edit_id:

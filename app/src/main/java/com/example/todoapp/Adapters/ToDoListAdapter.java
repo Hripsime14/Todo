@@ -1,7 +1,9 @@
-package com.example.todoapp;
+package com.example.todoapp.Adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +18,9 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.todoapp.Models.ToDoModel;
+import com.example.todoapp.R;
 import com.example.todoapp.Services.ToDoService;
+import com.example.todoapp.ToDoTypeAccess;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,7 +35,7 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
     private final SparseBooleanArray array = new SparseBooleanArray();
 
     public interface RecyclerViewClickListener {
-        void recyclerViewListClicked(View v, int position, long id);
+        void recyclerViewItemClicked(View v, int position, long id);
     }
 
     public interface WorkDoneListener {
@@ -44,8 +48,8 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
     }
 
 
-
     public ToDoListAdapter(List<ToDoModel> list, ToDoService service, Context context, RecyclerView recyclerView, RecyclerViewClickListener listener) {
+        super();
         this.list = list;
         this.toDoService = service;
         this.context = context;
@@ -55,12 +59,13 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
-
     public void addItem() {
-        if (list.add(toDoService.getList().get(toDoService.getList().size() -1))) {
+//        Log.d("finalTag", "addItem: size = " + toDoService.getList().size());
+//        ToDoModel model = toDoService.getList().get(toDoService.getList().size() - 1);
+//        if (list.add(/*toDoService.getList().get(toDoService.getList().size() -1)*/model)) {
             list = toDoService.getSortedList();
             notifyDataSetChanged();
-        }
+//        }
     }
 
     public void editItem(int pos) {
@@ -70,17 +75,18 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
         }
     }
 
-
     @NonNull
     @Override
     public ToDoListAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Log.d("finalTAGTAG", "onCreateViewHolder: notify");
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View listItem= layoutInflater.inflate(R.layout.todo_list_single_row, parent, false);
+        View listItem= layoutInflater.inflate(R.layout.todo_list_single_row, parent, false);//converting xml to View object
         return new MyViewHolder(listItem);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ToDoListAdapter.MyViewHolder holder, final int position) {
+        Log.d("finalTAGTAG", "onBindViewHolder: notify");
         final ToDoModel model = list.get(position);
         if (model.getType() == ToDoTypeAccess.BUSINESS_TYPE) holder.type.setText(R.string.business);
         else holder.type.setText(R.string.personal);
@@ -105,7 +111,7 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.recyclerViewListClicked(holder.itemView, position, model.getID());
+                    listener.recyclerViewItemClicked(holder.itemView, position, model.getID());
                 }
             }
         });
@@ -116,6 +122,15 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
         Date date = new Date(timestamp);
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         return sdf.format(date);
+
+
+//
+//        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneOffset.UTC);
+//        TemporalAccessor date = fmt.parse(dateString);
+//        Instant time = Instant.from(date);
+//
+//        DateTimeFormatter fmtOut = DateTimeFormatter.ofPattern("dd-MM-yyyy").withZone(ZoneOffset.UTC);
+//        return fmtOut.format(time);
     }
 
     @Override
@@ -126,6 +141,8 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.MyView
 
 
     //TODO: haskanal te vor depqum MyViewHolder@ piti liner static
+    //TODO: mekel haskanal te ViewHolder@ inchqan erevum a ekrani vra item, edqani hamar kanchum a che findViewById,
+    //TODO: u menak het scroll-i jamanak enq cahce-avorman effecty tesnum (u hamel ed chi hakasum recycle-ingin)
     static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView type, date_and_time, title;
         ImageView icon;

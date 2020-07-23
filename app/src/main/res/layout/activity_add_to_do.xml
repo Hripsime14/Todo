@@ -43,9 +43,11 @@
         android:id="@+id/type_spinner_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:spinnerMode="dropdown"
         android:layout_marginTop="50sp"
         android:layout_marginEnd="20sp"
         android:layout_marginStart="20sp"
+        android:dropDownVerticalOffset="60dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edit_icon_id"
         app:layout_constraintEnd_toEndOf="parent"
@@ -173,14 +175,8 @@
                 android:layout_alignBottom="@id/time_edit_id"
                 android:layout_alignEnd="@id/time_edit_id" />
 
-
         </RelativeLayout>
-
     </LinearLayout>
-
-
-
-
 
 
     <EditText
@@ -198,7 +194,7 @@
         android:layout_marginStart="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/date_time_id"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 
     <Button

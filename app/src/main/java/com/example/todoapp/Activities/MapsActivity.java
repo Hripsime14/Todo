@@ -21,8 +21,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -39,6 +37,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FusedLocationProviderClient fusedLocationClient;
     private static final int LOCATION_REQUEST_CODE = 1000;
     private double latitude = 0.0, longitude = 0.0;
+    public static String NAME_EXTRA = "NAME";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +74,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 longitude = latLng.longitude;
             }
         });
-
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -84,16 +82,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     LOCATION_REQUEST_CODE);
         } else {
             showLocation();
-        }
 
-        mMap.setMyLocationEnabled(true);
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                Log.d("logmarkerclick", "onMarkerClick: marker is clicked");
-                return false;
-            }
-        });
+            mMap.setMyLocationEnabled(true);
+            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    return false;
+                }
+            });
+        }
 //        mMap.setOnInfoWindowClickListener(this);
 //        mMap.setOnMarkerDragListener(this);
     }
@@ -144,7 +141,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             addresses = geocoder.getFromLocation(latitude, longitude, 1);
             if (addresses != null) {
                 Intent intent = getIntent();
-                intent.putExtra("name", addresses.get(0).getAddressLine(0));
+                intent.putExtra(NAME_EXTRA, addresses.get(0).getAddressLine(0));
                 setResult(Activity.RESULT_OK, intent);
             }
 

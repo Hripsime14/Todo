@@ -94,17 +94,6 @@
         app:layout_constraintBottom_toBottomOf="@id/background_image_id"
         />
 
-    <ProgressBar
-        android:id="@+id/progress_bar_id"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
-        android:layout_margin="5dp"
-        android:theme="@style/AppTheme.WhiteAccent"
-        app:layout_constraintBottom_toBottomOf="@id/work_done_id"
-        app:layout_constraintTop_toTopOf="@id/work_done_id"
-        app:layout_constraintEnd_toStartOf="@id/work_done_id"/>
-
-
     <TextView
         android:id="@+id/inbox_text_id"
         android:layout_width="match_parent"

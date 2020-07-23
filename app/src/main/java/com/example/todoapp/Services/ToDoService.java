@@ -13,7 +13,6 @@ import java.util.List;
 
 public class ToDoService {
     private Context context;
-    private static List<ToDoModel> modelList;
     private static ToDoService instance;
     //TODO: haskanal te vonc pass anel contexty, erb unenq singleton, u kara memory leak arajacni
     private ToDoHelper toDoHelper;
@@ -59,12 +58,12 @@ public class ToDoService {
     public List<ToDoModel> getList() {
         toDoHelper = new ToDoHelper(context);
         Cursor cursor = toDoHelper.getAllData();
-        modelList = new ArrayList<>();
+        List<ToDoModel> modelList = new ArrayList<>();
         if (cursor != null && cursor.getCount() > 0) {
             int i = 0;
             if (cursor.moveToFirst()) {
                 ToDoModel model;
-                while (cursor.moveToNext()) {
+                do {
                     model = new ToDoModel();
                     model.setID(cursor.getLong(i++));
                     model.setType(cursor.getInt(i++));
@@ -76,7 +75,7 @@ public class ToDoService {
                     model.setDone(true); else model.setDone(false);
                     modelList.add(model);
                     i = 0;
-                }
+                } while (cursor.moveToNext());
             }
         }
         return modelList;
@@ -101,11 +100,12 @@ public class ToDoService {
         for (ToDoModel model : getList()) {
             if (model.isDone()) doneWork ++;
         }
-        return 100 * doneWork / getList().size();
+        if (getList().size() > 0) return 100 * doneWork / getList().size();
+        else return 0;
     }
 
     public String getDoneWork() {
-        return countDoneWork() + "%";
+        return countDoneWork() + "% done";
     }
 
     public String getPersTODO() {
@@ -118,7 +118,7 @@ public class ToDoService {
         return busTODO + "";
     }
 
-    private class SortByTime implements Comparator<ToDoModel> {
+    private static class SortByTime implements Comparator<ToDoModel> {
 
         @Override
         public int compare(ToDoModel model1, ToDoModel model2) {

@@ -10,7 +10,7 @@ import com.example.todoapp.Models.ToDoModel;
 
 
 public class ToDoHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "ToDo.db";
     public static final String TABLE_NAME = "todo_table";
     private SQLiteDatabase db;
@@ -23,16 +23,17 @@ public class ToDoHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE table " + TABLE_NAME + " (" + Columns.ID_COL_1 +
                 " INTEGER PRIMARY KEY AUTOINCREMENT," + Columns.TYPE_COL_2 + " INTEGER," + Columns.TITLE_COL_3 + " TEXT," +
-                Columns.PLACE_COL_4 + " TEXT," + Columns.TIMESTAMP_COL_5 + " INTEGER," + Columns.NOTIFICATION_COL_6 + " TEXT)");
+                Columns.PLACE_COL_4 + " TEXT," + Columns.TIMESTAMP_COL_5 + " INTEGER," + Columns.NOTIFICATION_COL_6 + " TEXT," +
+                Columns.DONE_COL_7 + " INTEGER DEFAULT 0)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {//TODO:es method-@ usumnasirel
-        if (newVersion > oldVersion) {
-            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + Columns.DONE_COL_7 + " INTEGER DEFAULT 0");
-        }
-//        db.execSQL("DROP table IF EXISTS " + TABLE_NAME);
-//        onCreate(db);
+//        if (newVersion > oldVersion) {
+//            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + Columns.DONE_COL_7 + " INTEGER DEFAULT 0");
+//        }
+        db.execSQL("DROP table IF EXISTS " + TABLE_NAME);
+        onCreate(db);
     }
 
     public long insertData(ToDoModel model) {
@@ -67,7 +68,7 @@ public class ToDoHelper extends SQLiteOpenHelper {
         contentValues.put(Columns.PLACE_COL_4, model.getPlace());
         contentValues.put(Columns.TIMESTAMP_COL_5, model.getTimeStamp());
         contentValues.put(Columns.NOTIFICATION_COL_6, model.getNotification());
-        contentValues.put(Columns.DONE_COL_7, model.isDone());
+        contentValues.put(Columns.DONE_COL_7, model.isDone() ? 1 : 0);
         return contentValues;
     }
 
