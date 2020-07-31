@@ -4,28 +4,32 @@ import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.example.todoapp.Services.NotificationService;
+
 public class ReminderBroadcast extends BroadcastReceiver {
-    private static final int NOTIFICATION_ID = 55;
-    private static final String CHANNEL_ID = "CHANNEL_ID";
-    public static final String TITLE_EXTRA = "TODO_TITLE";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Notification.Builder builder = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            builder = new Notification.Builder(context, CHANNEL_ID)
-                    .setSmallIcon(R.drawable.notifications, 10)
-                    .setContentTitle("ToDo notification")
-                    .setContentText("Be careful not to miss \""+ intent.getStringExtra(TITLE_EXTRA) + "\" TODO")
-                    .setCategory(NotificationCompat.CATEGORY_REMINDER)
-                    .setAutoCancel(true);
+        Log.i("jobschedulertag", "Service tried to stop");
+        Toast.makeText(context, "Service restarted", Toast.LENGTH_SHORT).show();
+
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(new Intent(context, NotificationService.class));
+        } else {
+            context.startService(new Intent(context, NotificationService.class));
+        }*/
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(new Intent(context, MyJobService.class));
+        } else {
+            context.startService(new Intent(context, MyJobService.class));
         }
-        Notification notification = builder.build();
-        NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, notification);
     }
 }
